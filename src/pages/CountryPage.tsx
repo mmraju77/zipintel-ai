@@ -4,13 +4,74 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES, Region } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
-import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2 } from 'lucide-react';
+import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download } from 'lucide-react';
+import { useI18n } from '../lib/i18n';
 
 export default function CountryPage() {
+  const { t, language } = useI18n();
   const { countryId, l1, l2, l3 } = useParams<{ countryId: string; l1?: string; l2?: string; l3?: string }>();
   const navigate = useNavigate();
   const country = COUNTRIES.find(c => c.id === countryId);
   const data = POSTAL_DATA[countryId || ''] || [];
+
+  const [favorites, setFavorites] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    const savedFavorites = localStorage.getItem('favorite-localities');
+    if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
+  }, []);
+
+  const toggleFavorite = (item: any) => {
+    const isFav = favorites.some(f => f.id === item.id);
+    let newFavs;
+    if (isFav) {
+      newFavs = favorites.filter(f => f.id !== item.id);
+    } else {
+      newFavs = [item, ...favorites];
+    }
+    setFavorites(newFavs);
+    localStorage.setItem('favorite-localities', JSON.stringify(newFavs));
+  };
+
+  const handleDownloadReport = (item: any) => {
+    const printContent = `
+      <div style="font-family: sans-serif; padding: 40px; color: #020617; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: start; border-bottom: 2px solid #d4af37; padding-bottom: 20px; margin-bottom: 30px;">
+          <div>
+            <h1 style="margin: 0; font-size: 24px; text-transform: uppercase;">ZipIntel AI Verified Report</h1>
+            <p style="margin: 5px 0 0; font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 2px;">Global Intelligence Protocol</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 0; font-size: 10px; font-weight: bold; color: #d4af37;">DATE: ${new Date().toLocaleDateString()}</p>
+            <p style="margin: 0; font-size: 10px; color: #64748b;">REF: ${item.id.toUpperCase()}</p>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 40px;">
+          <h2 style="font-size: 32px; margin: 0 0 10px; font-style: italic;">${item.name}</h2>
+          <div style="display: flex; gap: 20px;">
+            <div style="flex: 1; padding: 15px; background: #f8fafc; border-radius: 8px;">
+              <p style="margin: 0 0 5px; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold;">Region</p>
+              <p style="margin: 0; font-weight: bold;">${item.type}</p>
+            </div>
+            <div style="flex: 1; padding: 15px; background: #f8fafc; border-radius: 8px;">
+              <p style="margin: 0 0 5px; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold;">Postal Code</p>
+              <p style="margin: 0; font-weight: bold; font-size: 20px; color: #d4af37;">${item.postalCode || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px; color: #94a3b8; font-size: 8px; text-transform: uppercase; letter-spacing: 1px;">
+          ZipIntel AI - Premium Intelligence Architecture
+        </div>
+      </div>
+    `;
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`<html><head><title>Report - ${item.name}</title></head><body>${printContent}</body></html>`);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
 
   if (!country) return <div className="p-8 text-center text-slate-400">Country not found</div>;
 
@@ -197,7 +258,7 @@ export default function CountryPage() {
       {/* Breadcrumbs & Navigation */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-widest font-black">
-          <Link to="/" className="hover:text-gold transition-colors">Global</Link>
+          <Link to="/" className="hover:text-gold transition-colors">{t('home')}</Link>
           <ChevronRight className="w-3 h-3" />
           <Link to={`/${country.id}`} className={`hover:text-gold transition-colors ${!l1 ? 'text-gold italic' : ''}`}>
             {country.name}
@@ -232,7 +293,7 @@ export default function CountryPage() {
             className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-tighter"
           >
             <ArrowLeft className="w-3 h-3" />
-            <span>Back</span>
+            <span>{language === 'en' ? 'Back' : 'వెనుకకు'}</span>
           </button>
         )}
       </div>
@@ -256,7 +317,7 @@ export default function CountryPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl lg:text-5xl font-black mb-4 text-white tracking-tighter uppercase italic"
           >
-            {currentNode?.name || country.name} <span className="gold-gradient-text">{l3 ? 'DIRECTORY' : country.hierarchy[currentLevel]?.toUpperCase()}</span>
+            {currentNode?.name || country.name} <span className="gold-gradient-text uppercase">{l3 ? (language === 'en' ? 'DIRECTORY' : 'డైరెక్టరీ') : country.hierarchy[currentLevel]?.toUpperCase()}</span>
           </motion.h1>
           <p className="text-slate-500 text-base max-w-2xl font-medium">
             Currently viewing all <span className="text-slate-300">verified {nextLevelName.toLowerCase()}s</span> within {currentNode?.name || country.name}. 
@@ -341,7 +402,29 @@ export default function CountryPage() {
                           <MapPin className="w-5 h-5 text-gold group-hover:text-midnight" />
                         )}
                       </div>
-                      <ChevronRight className={`w-4 h-4 text-slate-800 group-hover:text-gold transition-all ${item.postalCode ? 'hidden' : ''}`} />
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleFavorite({ ...item, path: itemPath });
+                          }}
+                          className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 hover:text-red-500 transition-colors"
+                        >
+                          <Heart className={`w-3.5 h-3.5 ${favorites.some(f => f.id === item.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDownloadReport(item);
+                          }}
+                          className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 hover:text-gold transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                        <ChevronRight className={`w-4 h-4 text-slate-800 group-hover:text-gold transition-all ${item.postalCode ? 'hidden' : ''}`} />
+                      </div>
                     </div>
 
                     <h3 className="text-xl font-black text-white group-hover:text-gold transition-colors uppercase italic mb-1">{item.name}</h3>

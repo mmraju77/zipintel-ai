@@ -9,10 +9,12 @@ import {
   Search, 
   Globe, 
   ChevronRight,
-  Database
+  Database,
+  Languages
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES } from '../types';
+import { useI18n } from '../lib/i18n';
 
 const Logo = ({ collapsed = false }: { collapsed?: boolean }) => (
   <div className="flex items-center gap-3">
@@ -56,13 +58,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const location = useLocation();
+  const { language, setLanguage, t } = useI18n();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   const navItems = [
-    { name: 'Home', icon: Home, path: '/' },
-    { name: 'AI Tools', icon: Cpu, path: '/ai-tools' },
+    { name: t('home'), icon: Home, path: '/' },
+    { name: t('aiTools'), icon: Cpu, path: '/ai-tools' },
   ];
 
   return (
@@ -85,7 +88,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
-            <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-2 px-2 font-bold">Navigation</div>
+            <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-2 px-2 font-bold">{t('navigation')}</div>
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -100,7 +103,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ))}
 
             <div className="pt-8 mb-2">
-              <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-2 px-2 font-bold">Directories</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-2 px-2 font-bold">{t('directories')}</div>
               <div className="space-y-1">
                 {COUNTRIES.map((country) => (
                   <Link
@@ -156,9 +159,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <X />
                   </button>
                 </div>
-                <nav className="space-y-8">
+                <div className="space-y-8">
                   <div className="space-y-1">
-                    <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-3 px-2 font-bold">Navigation</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-3 px-2 font-bold">{t('navigation')}</div>
                     {navItems.map((item) => (
                       <Link
                         key={item.path}
@@ -175,7 +178,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </div>
 
                   <div>
-                    <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-3 px-2 font-bold">Directories</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-3 px-2 font-bold">{t('directories')}</div>
                     <div className="grid grid-cols-1 gap-1">
                       {COUNTRIES.map((country) => (
                         <Link
@@ -192,7 +195,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       ))}
                     </div>
                   </div>
-                </nav>
+                </div>
               </motion.div>
             </>
           )}
@@ -206,7 +209,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
               <input 
                 type="text" 
-                placeholder="Search global postcodes, regions, or districts..." 
+                placeholder={t('searchPlaceholder')} 
                 className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-3 pl-12 pr-12 text-sm focus:outline-none focus:border-gold transition-all text-white placeholder-slate-500 shadow-inner"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:block">
@@ -214,6 +217,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <div className="flex items-center gap-6">
+              {/* Language Toggle */}
+              <button 
+                onClick={() => setLanguage(language === 'en' ? 'te' : 'en')}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:border-gold/50 transition-all group"
+              >
+                <Languages className="w-4 h-4 text-slate-500 group-hover:text-gold" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-100 italic">
+                  {language === 'en' ? 'తెలుగు' : 'English'}
+                </span>
+              </button>
+
               <div className="text-right">
                 <p className="text-[10px] text-slate-500 uppercase font-black tracking-tighter">System Status</p>
                 <div className="flex items-center gap-1.5 justify-end">

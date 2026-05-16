@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
+import fetch from "node-fetch";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
@@ -12,7 +12,7 @@ const PORT = 3000;
 app.use(express.json());
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || "",
+  apiKey: process.env.GEMINI_API_KEY || "missing-key",
   httpOptions: {
     headers: {
       'User-Agent': 'aistudio-build',
@@ -142,6 +142,7 @@ app.get("/api/postal/live-global/:country/:zip", async (req, res) => {
 // Vite middleware for development
 async function setupServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -150,7 +151,7 @@ async function setupServer() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get(/.*/, (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
