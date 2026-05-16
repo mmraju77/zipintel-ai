@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #020617;
+  --color-slate-sidebar: #0f172a;
+  --color-slate-card: #1e293b;
+  --color-gold: #d4af37;
+  --color-brass: #b8860b;
+  --color-accent: var(--color-gold);
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --animate-shimmer: shimmer 3s linear infinite;
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-midnight text-slate-200 antialiased font-sans;
+  }
+}
+
+.glass-card {
+  @apply bg-slate-800/40 backdrop-blur-md border border-slate-700/50 rounded-2xl hover:border-gold/30 transition-all duration-300;
+}
+
+.gold-gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-gold to-white bg-[length:200%_auto] animate-shimmer;
+}
+
+.gold-button {
+  @apply bg-gold hover:bg-brass text-midnight font-bold px-6 py-2.5 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)];
+}
+
+.sidebar-link-active {
+  @apply bg-slate-800 text-gold border border-slate-700 shadow-[inset_0_0_10px_rgba(212,175,55,0.05)];
+}

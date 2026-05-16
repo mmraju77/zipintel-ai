@@ -1,0 +1,6 @@
+{
+  "name": "ZipIntel AI",
+  "description": "Global postal and utility platform with AI-driven address tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
