@@ -14,6 +14,44 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES } from '../types';
 
+const Logo = ({ collapsed = false }: { collapsed?: boolean }) => (
+  <div className="flex items-center gap-3">
+    <div className="relative w-10 h-10 flex-shrink-0">
+      {/* Orbit Rings */}
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 border border-gold/30 rounded-full"
+      />
+      <motion.div 
+        animate={{ rotate: -360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-[3px] border border-blue-500/20 rounded-full"
+      />
+      {/* Core */}
+      <div className="absolute inset-[6px] bg-gradient-to-br from-slate-900 to-midnight rounded-full border border-gold/40 flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.15)]">
+        <Globe className="text-gold w-4 h-4" />
+      </div>
+      {/* Orbit Dot */}
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0"
+      >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_#60a5fa] blur-[0.5px]" />
+      </motion.div>
+    </div>
+    {!collapsed && (
+      <div>
+        <h1 className="text-xl font-black tracking-tighter text-white uppercase italic leading-none">
+          ZIPINTEL <span className="gold-gradient-text">AI</span>
+        </h1>
+        <p className="text-[9px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">Global Intelligence</p>
+      </div>
+    )}
+  </div>
+);
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -30,13 +68,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-midnight font-sans text-slate-200">
       {/* Mobile Header */}
-      <header className="lg:hidden flex items-center justify-between p-4 bg-slate-sidebar border-b border-slate-800 sticky top-0 z-50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gold rounded flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.3)]">
-            <Globe className="text-midnight w-5 h-5" />
-          </div>
-          <span className="font-bold text-lg text-white tracking-tighter uppercase italic">ZIPINTEL <span className="text-gold">AI</span></span>
-        </div>
+      <header className="lg:hidden flex items-center justify-between p-4 bg-[#020617] border-b border-slate-800 sticky top-0 z-50">
+        <Logo />
         <button onClick={toggleMobileMenu} className="text-slate-100 p-1">
           {isMobileMenuOpen ? <X /> : <Menu />}
         </button>
@@ -47,16 +80,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <aside 
           className={`hidden lg:flex flex-col h-screen sticky top-0 bg-slate-sidebar border-r border-slate-800 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}
         >
-          <div className="p-6 flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)] flex-shrink-0">
-              <Globe className="text-midnight w-6 h-6" />
-            </div>
-            {isSidebarOpen && (
-              <div>
-                <h1 className="text-xl font-bold tracking-tighter text-white uppercase italic leading-none">ZIPINTEL <span className="text-gold">AI</span></h1>
-                <p className="text-[9px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">Global Intelligence</p>
-              </div>
-            )}
+          <div className="p-5 mb-4">
+            <Logo collapsed={!isSidebarOpen} />
           </div>
 
           <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
@@ -126,15 +151,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 className="fixed inset-y-0 left-0 w-80 bg-slate-sidebar z-50 lg:hidden p-6 overflow-y-auto border-r border-slate-800"
               >
                 <div className="flex items-center justify-between mb-10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                      <Globe className="text-midnight w-6 h-6" />
-                    </div>
-                    <div>
-                      <h1 className="text-xl font-bold tracking-tighter text-white uppercase italic leading-none">ZIPINTEL <span className="text-gold">AI</span></h1>
-                      <p className="text-[9px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">Global Intelligence</p>
-                    </div>
-                  </div>
+                  <Logo />
                   <button onClick={toggleMobileMenu} className="text-slate-400 p-2 hover:bg-slate-800 rounded-lg">
                     <X />
                   </button>
