@@ -6,6 +6,16 @@ export interface Region {
   postalCode?: string;
 }
 
+export interface SearchResult {
+  id: string;
+  name: string;
+  type: string;
+  path: string;
+  countryName?: string;
+  postalCode?: string;
+  isLive?: boolean;
+}
+
 export interface Country {
   id: string;
   name: string;

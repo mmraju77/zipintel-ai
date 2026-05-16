@@ -28,8 +28,8 @@ export default function AITools() {
       const data = await response.json();
       if (data.normalized) {
         setResult(data.normalized);
-      } else if (data.error) {
-        setError(data.error);
+      } else if (data.message || data.error) {
+        setError(data.message || data.error);
       }
     } catch (error) {
       console.error('Error:', error);

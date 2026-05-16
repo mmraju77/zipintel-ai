@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
-import { COUNTRIES, Region } from '../types';
+import { COUNTRIES, Region, SearchResult } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
 import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
@@ -14,14 +14,14 @@ export default function CountryPage() {
   const country = COUNTRIES.find(c => c.id === countryId);
   const data = POSTAL_DATA[countryId || ''] || [];
 
-  const [favorites, setFavorites] = React.useState<any[]>([]);
+  const [favorites, setFavorites] = React.useState<SearchResult[]>([]);
 
   React.useEffect(() => {
     const savedFavorites = localStorage.getItem('favorite-localities');
     if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
   }, []);
 
-  const toggleFavorite = (item: any) => {
+  const toggleFavorite = (item: SearchResult) => {
     const isFav = favorites.some(f => f.id === item.id);
     let newFavs;
     if (isFav) {
@@ -33,7 +33,7 @@ export default function CountryPage() {
     localStorage.setItem('favorite-localities', JSON.stringify(newFavs));
   };
 
-  const handleDownloadReport = (item: any) => {
+  const handleDownloadReport = (item: SearchResult) => {
     const printContent = `
       <div style="font-family: sans-serif; padding: 40px; color: #020617; background: #fff;">
         <div style="display: flex; justify-content: space-between; align-items: start; border-bottom: 2px solid #d4af37; padding-bottom: 20px; margin-bottom: 30px;">
@@ -382,6 +382,7 @@ export default function CountryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayItems.map((item, index) => {
               const itemPath = l3 ? '#' : l2 ? `/${countryId}/${l1}/${l2}/${item.id}` : l1 ? `/${countryId}/${l1}/${item.id}` : `/${countryId}/${item.id}`;
+              const searchItem: SearchResult = { ...item, path: itemPath };
               
               return (
                 <motion.div
@@ -407,7 +408,7 @@ export default function CountryPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            toggleFavorite({ ...item, path: itemPath });
+                            toggleFavorite(searchItem);
                           }}
                           className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 hover:text-red-500 transition-colors"
                         >
@@ -417,7 +418,7 @@ export default function CountryPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            handleDownloadReport(item);
+                            handleDownloadReport(searchItem);
                           }}
                           className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 hover:text-gold transition-colors"
                         >

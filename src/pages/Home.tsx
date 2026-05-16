@@ -3,17 +3,17 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Globe, Shield, Cpu, ArrowRight, Zap, Target, Database, MapPin, ChevronRight, Hash, Loader2, Heart, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { COUNTRIES } from '../types';
+import { COUNTRIES, SearchResult } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
 import { useI18n } from '../lib/i18n';
 
 const MotionLink = motion.create(Link);
 
 export default function Home() {
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<SearchResult[]>([]);
   const { t } = useI18n();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Home() {
     localStorage.setItem('search-history', JSON.stringify(newHistory));
   };
 
-  const toggleFavorite = (item: any) => {
+  const toggleFavorite = (item: SearchResult) => {
     const isFav = favorites.some(f => f.id === item.id);
     let newFavs;
     if (isFav) {
@@ -42,7 +42,7 @@ export default function Home() {
     localStorage.setItem('favorite-localities', JSON.stringify(newFavs));
   };
 
-  const handleDownloadReport = (item: any) => {
+  const handleDownloadReport = (item: SearchResult) => {
     const printContent = `
       <div style="font-family: sans-serif; padding: 40px; color: #020617; background: #fff;">
         <div style="display: flex; justify-content: space-between; align-items: start; border-bottom: 2px solid #d4af37; padding-bottom: 20px; margin-bottom: 30px;">
@@ -145,7 +145,7 @@ export default function Home() {
                   setIsSearching(true);
                   
                   // Simple recursive search through POSTAL_DATA
-                  let results: any[] = [];
+                  let results: SearchResult[] = [];
 
                   // 1. Search through Countries first
                   COUNTRIES.forEach(c => {
