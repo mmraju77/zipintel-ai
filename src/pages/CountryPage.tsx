@@ -185,13 +185,18 @@ export default function CountryPage() {
   const displayItems = items.length > 0 ? items : fetchedItems;
 
   // Dynamic PIN mapping for Alluri District
+  const ALLURI_MANDALS = [
+    { id: 'paderu', en: 'Paderu (HQ)', te: 'పాడేరు (ప్రధాన కేంద్రం)', pin: '531024' },
+    { id: 'araku', en: 'Araku Valley', te: 'అరకు లోయ', pin: '531151' },
+    { id: 'hukumpeta', en: 'Hukumpeta', te: 'హుకుంపేట', pin: '531077' },
+    { id: 'ananthagiri', en: 'Ananthagiri', te: 'అనంతగిరి', pin: '531145' },
+    { id: 'chintapalli', en: 'Chintapalli', te: 'చింతపల్లి', pin: '531111' },
+  ];
+
   const getAlluriPin = (locality: string) => {
     const name = locality.toLowerCase();
-    if (name.includes('araku')) return '531151';
-    if (name.includes('chintapalli')) return '531111';
-    if (name.includes('hukumpeta')) return '531077';
-    if (name.includes('paderu')) return '531024';
-    return '531077'; // Fallback for the district hub area
+    const match = ALLURI_MANDALS.find(m => name.includes(m.id) || name.includes(m.en.toLowerCase().split(' ')[0]));
+    return match ? match.pin : '531024';
   };
 
   const currentPin = countryId === 'india' && l1 === 'andhra-pradesh' ? getAlluriPin(currentNode?.name || '') : '531077';
@@ -370,10 +375,30 @@ export default function CountryPage() {
                       <div className="h-4 w-1/2 bg-slate-800 animate-pulse rounded" />
                     </div>
                   ) : insight ? (
-                    <div className="space-y-3 pt-2">
+                    <div className="space-y-4 pt-2">
                       <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
                         "{insight}"
                       </p>
+                      
+                      {l2 === 'alluri-sitharama-raju' && !l3 && (
+                        <div className="space-y-3">
+                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{language === 'te' ? 'జిల్లా ఉప-విభాగాలు (మండలాలు)' : 'District Sub-divisions (Mandals)'}</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {ALLURI_MANDALS.map((m) => (
+                              <div key={m.id} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between group hover:border-gold/30 transition-colors">
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black text-slate-200 uppercase tracking-tight">{language === 'te' ? m.te : m.en}</p>
+                                  <p className="text-[9px] font-bold text-gold uppercase tracking-widest flex items-center gap-1">
+                                    <Hash className="w-2 h-2" /> {m.pin}
+                                  </p>
+                                </div>
+                                <ChevronRight className="w-3 h-3 text-slate-700 group-hover:text-gold transition-colors" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex flex-wrap gap-2">
                         {countryId === 'india' && (l1 === 'andhra-pradesh' || !l1) && (
                           <>
@@ -397,6 +422,20 @@ export default function CountryPage() {
                           (language === 'te' ? `${currentNode?.name || 'అల్లూరి సీతారామ రాజు'} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${currentNode?.name || 'Alluri Sitharama Raju District'}: A high-density tribal administrative block. Verified postal node: ${currentPin}.`) 
                           : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
                       </p>
+
+                      {l2 === 'alluri-sitharama-raju' && !l3 && (
+                        <div className="grid grid-cols-2 gap-2 mt-4">
+                          {ALLURI_MANDALS.map((m) => (
+                            <div key={m.id} className="p-3 rounded-xl bg-slate-900/40 border border-slate-800/40 flex items-center justify-between">
+                              <div className="space-y-1">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tight">{language === 'te' ? m.te : m.en}</p>
+                                <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{m.pin}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       <div className="flex flex-wrap gap-2">
                          <span className="px-2 py-1 rounded-md bg-slate-900/50 border border-slate-800/50 text-[8px] font-bold text-slate-600 uppercase tracking-widest">Indexing Level {currentLevel}</span>
                          <span className="px-2 py-1 rounded-md bg-slate-900/50 border border-slate-800/50 text-[8px] font-bold text-slate-600 uppercase tracking-widest">Global Directory Mode</span>
