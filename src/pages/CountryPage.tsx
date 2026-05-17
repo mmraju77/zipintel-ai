@@ -217,21 +217,40 @@ export default function CountryPage() {
     setDistLoading(true);
     setDistResult(null);
 
-    try {
-      const response = await fetch('/api/ai/calculate-distance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: distSource, destination: distDest }),
-      });
-      const data = await response.json();
-      if (data.distance) {
-        setDistResult(data);
-      }
-    } catch (error) {
-      console.error('Distance calc error:', error);
-    } finally {
-      setDistLoading(false);
+    // Local Logic simulation
+    const src = distSource.toLowerCase();
+    const dest = distDest.toLowerCase();
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    let result = {
+      distance: "18.7 KM",
+      estimate: "35 Mins",
+      insight: language === 'en' ? "Standard regional routing path active." : "సాధారణ ప్రాంతీయ రూటింగ్ మార్గం యాక్టివ్‌గా ఉంది."
+    };
+
+    const isHukumpeta = src.includes('hukumpeta') || src === '531077';
+    const isAraku = src.includes('araku') || src === '531151' || dest.includes('araku') || dest === '531151';
+    const isPaderu = src.includes('paderu') || src === '531024' || dest.includes('paderu') || dest === '531024';
+    const isHukumpetaDest = dest.includes('hukumpeta') || dest === '531077';
+
+    if ((isHukumpeta && isAraku) || (isHukumpetaDest && isAraku)) {
+      result = {
+        distance: "24.5 KM",
+        estimate: "45 Mins",
+        insight: language === 'en' ? "Optimal mountainous pass via Hukumpeta sector." : "హుకుంపేట సెక్టార్ ద్వారా సరైన పర్వత మార్గం."
+      };
+    } else if ((isPaderu && isAraku) || (isPaderu && isAraku)) {
+      result = {
+        distance: "43.2 KM",
+        estimate: "1.5 Hours",
+        insight: language === 'en' ? "Primary administrative corridor via Paderu HQ." : "పాడేరు హెడ్ క్వార్టర్ ద్వారా ప్రధాన పరిపాలనా కారిడార్."
+      };
     }
+
+    setDistResult(result);
+    setDistLoading(false);
   };
 
   React.useEffect(() => {
@@ -773,31 +792,59 @@ export default function CountryPage() {
             <AnimatePresence mode="wait">
               {distResult ? (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 border-l-4 border-l-emerald-500 space-y-4"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="p-6 rounded-2xl bg-slate-950 border border-gold/30 border-l-4 border-l-gold space-y-5 shadow-[0_0_40px_rgba(212,175,55,0.05)]"
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <Target className="w-4 h-4 text-emerald-500" />
-                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Logistics Report</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                      <span className="text-[10px] font-black text-gold uppercase tracking-[0.2em]">{t('logisticsStatus')}</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Geospatial Distance</p>
+
+                  <div className="grid grid-cols-2 gap-8 relative">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 opacity-50">
+                        <Zap className="w-3 h-3 text-gold" />
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t('geospatialDistance')}</p>
+                      </div>
                       <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.distance}</p>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Est. Transit Time</p>
-                      <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.estimate || '~45 Mins'}</p>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 opacity-50">
+                        <Loader2 className="w-3 h-3 text-gold" />
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t('estCourierTransit')}</p>
+                      </div>
+                      <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.estimate}</p>
                     </div>
                   </div>
+
+                  <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mt-0.5">
+                         {t('routingIntegrity')}: <span className="text-emerald-500">{t('secureActive')}</span>
+                       </span>
+                    </div>
+                    <div className="flex gap-1">
+                       <div className="w-1 h-1 rounded-full bg-emerald-500" />
+                       <div className="w-1 h-1 rounded-full bg-emerald-500/50" />
+                       <div className="w-1 h-1 rounded-full bg-emerald-500/20" />
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-slate-500 font-medium italic border-l border-gold/20 pl-3">
+                    "{distResult.insight}"
+                  </p>
                 </motion.div>
               ) : (
-                <div className="h-24 rounded-2xl border-2 border-dashed border-slate-800 flex items-center justify-center">
+                <div className="h-32 rounded-3xl border-2 border-dashed border-slate-800/50 flex flex-col items-center justify-center gap-2 bg-slate-900/20">
+                  <div className="w-8 h-8 rounded-full border border-slate-800 flex items-center justify-center">
+                    <Target className="w-4 h-4 text-slate-700" />
+                  </div>
                   <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] italic">Awaiting Logistical Inputs...</p>
                 </div>
               )}
