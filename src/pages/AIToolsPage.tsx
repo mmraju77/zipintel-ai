@@ -31,9 +31,9 @@ export default function AITools() {
       } else if (data.message || data.error) {
         setError(data.message || data.error);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      setError("Network error. AI connection unstable.");
+      setError(error.message || "Network error. AI connection unstable.");
     } finally {
       setLoading(false);
     }

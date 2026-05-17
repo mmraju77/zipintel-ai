@@ -14,6 +14,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const [favorites, setFavorites] = useState<SearchResult[]>([]);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const { t } = useI18n();
 
   useEffect(() => {
@@ -143,6 +144,7 @@ export default function Home() {
                   }
                   const lowerVal = val.toLowerCase();
                   setIsSearching(true);
+                  setSearchError(null);
                   
                   // Simple recursive search through POSTAL_DATA
                   let results: SearchResult[] = [];
@@ -209,8 +211,9 @@ export default function Home() {
                           }
                         });
                       }
-                    } catch (err) {
+                    } catch (err: any) {
                       console.error('India live search error:', err);
+                      setSearchError(`Live India API Node: ${err.message || 'Connection unstable'}`);
                     }
                   }
 
@@ -238,8 +241,9 @@ export default function Home() {
                           });
                         });
                       }
-                    } catch (err) {
+                    } catch (err: any) {
                       console.error('Global live search error:', err);
+                      setSearchError(`Global Index Node: ${err.message || 'Connection unstable'}`);
                     }
                   }
 
@@ -253,7 +257,18 @@ export default function Home() {
             </div>
           </div>
 
-          {/* History Chips */}
+          {searchError && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 p-2 bg-red-500/10 border border-red-500/20 rounded-lg"
+            >
+              <p className="text-[10px] text-red-400 font-bold uppercase tracking-tight flex items-center justify-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                {searchError}
+              </p>
+            </motion.div>
+          )}
           {history.length > 0 && !searchResults.length && (
             <motion.div 
               initial={{ opacity: 0 }}

@@ -164,14 +164,14 @@ export default function CountryPage() {
           const result = await response.json();
           if (result.records && result.records.length > 0) {
             setFetchedItems(result.records);
-          } else if (result.error) {
-            setErrorStatus(result.error);
+          } else if (result.message || result.error) {
+            setErrorStatus(result.message || result.error);
           } else {
-            setErrorStatus('Postal Code not found. Please verify and try again.');
+            setErrorStatus('Region data node reported empty records. Switching to manual indexing.');
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Fetch error:', error);
-          setErrorStatus('Network error. Falling back to indexed database.');
+          setErrorStatus(`Node Communication Error: ${error.message || 'The connection failed'}`);
         } finally {
           setFetchingItems(false);
         }
@@ -199,8 +199,12 @@ export default function CountryPage() {
           }),
         });
         const data = await response.json();
-        if (data.insight) setInsight(data.insight);
-      } catch (error) {
+        if (data.insight) {
+          setInsight(data.insight);
+        } else if (data.message) {
+          console.warn('AI Insight Warning:', data.message);
+        }
+      } catch (error: any) {
         console.error('Insight error:', error);
       } finally {
         setInsightLoading(false);
