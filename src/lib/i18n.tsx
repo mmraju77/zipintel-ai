@@ -35,6 +35,7 @@ const translations: Translations = {
   secureActive: { en: 'Secure / Active', te: 'సురక్షితం / యాక్టివ్' },
   verifiedAcquisition: { en: 'Verified Data Acquisition', te: 'ధృవీకరించబడిన డేటా సేకరణ' },
   accurate100: { en: '100% Accurate', te: '100% ఖచ్చితమైనది' },
+  highwayRoutingActive: { en: 'High-Precision Highway Routing Active', te: 'అధిక-ఖచ్చితమైన హైవే రూటింగ్ యాక్టివ్‌గా ఉంది' },
   logisticsStatus: { en: 'Logistics Status', te: 'రవాణా స్థితి' },
   transitTime: { en: 'Est. Transit Time', te: 'అంచనా రవాణా సమయం' },
   logisticsPass: { en: 'Logistics Pass', te: 'రవాణా పాస్' },

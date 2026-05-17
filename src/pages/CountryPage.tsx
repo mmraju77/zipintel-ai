@@ -797,7 +797,14 @@ export default function CountryPage() {
                         <Zap className="w-3 h-3 text-gold" />
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t('geospatialDistance')}</p>
                       </div>
-                      <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.distance}</p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.distance}</p>
+                        {distResult.isHighway && (
+                          <span className="px-1.5 py-0.5 rounded-sm bg-gold/10 border border-gold/20 text-[7px] font-black text-gold uppercase tracking-widest flex items-center gap-1">
+                            <Target className="w-2 h-2" /> {t('highwayRoutingActive')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 opacity-50">
