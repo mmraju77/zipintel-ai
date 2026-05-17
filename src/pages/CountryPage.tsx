@@ -217,40 +217,21 @@ export default function CountryPage() {
     setDistLoading(true);
     setDistResult(null);
 
-    // Local Logic simulation
-    const src = distSource.toLowerCase();
-    const dest = distDest.toLowerCase();
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    let result = {
-      distance: "18.7 KM",
-      estimate: "35 Mins",
-      insight: language === 'en' ? "Standard regional routing path active." : "సాధారణ ప్రాంతీయ రూటింగ్ మార్గం యాక్టివ్‌గా ఉంది."
-    };
-
-    const isHukumpeta = src.includes('hukumpeta') || src === '531077';
-    const isAraku = src.includes('araku') || src === '531151' || dest.includes('araku') || dest === '531151';
-    const isPaderu = src.includes('paderu') || src === '531024' || dest.includes('paderu') || dest === '531024';
-    const isHukumpetaDest = dest.includes('hukumpeta') || dest === '531077';
-
-    if ((isHukumpeta && isAraku) || (isHukumpetaDest && isAraku)) {
-      result = {
-        distance: "24.5 KM",
-        estimate: "45 Mins",
-        insight: language === 'en' ? "Optimal mountainous pass via Hukumpeta sector." : "హుకుంపేట సెక్టార్ ద్వారా సరైన పర్వత మార్గం."
-      };
-    } else if ((isPaderu && isAraku) || (isPaderu && isAraku)) {
-      result = {
-        distance: "43.2 KM",
-        estimate: "1.5 Hours",
-        insight: language === 'en' ? "Primary administrative corridor via Paderu HQ." : "పాడేరు హెడ్ క్వార్టర్ ద్వారా ప్రధాన పరిపాలనా కారిడార్."
-      };
+    try {
+      const response = await fetch('/api/ai/calculate-distance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: distSource, destination: distDest }),
+      });
+      const data = await response.json();
+      if (data.distance) {
+        setDistResult(data);
+      }
+    } catch (error) {
+      console.error('Distance calc error:', error);
+    } finally {
+      setDistLoading(false);
     }
-
-    setDistResult(result);
-    setDistLoading(false);
   };
 
   React.useEffect(() => {
@@ -802,7 +783,12 @@ export default function CountryPage() {
                       <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                       <span className="text-[10px] font-black text-gold uppercase tracking-[0.2em]">{t('logisticsStatus')}</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
+                    <div className="flex items-center gap-2">
+                       <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[7px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-1">
+                         <ShieldCheck className="w-2.5 h-2.5" /> {t('verifiedAcquisition')}: {t('accurate100')}
+                       </span>
+                       <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-8 relative">

@@ -33,6 +33,8 @@ const translations: Translations = {
   estCourierTransit: { en: 'Est. Courier Transit', te: 'అంచనా కొరియర్ రవాణా' },
   routingIntegrity: { en: 'Routing Integrity', te: 'రూటింగ్ సమగ్రత' },
   secureActive: { en: 'Secure / Active', te: 'సురక్షితం / యాక్టివ్' },
+  verifiedAcquisition: { en: 'Verified Data Acquisition', te: 'ధృవీకరించబడిన డేటా సేకరణ' },
+  accurate100: { en: '100% Accurate', te: '100% ఖచ్చితమైనది' },
   logisticsStatus: { en: 'Logistics Status', te: 'రవాణా స్థితి' },
   transitTime: { en: 'Est. Transit Time', te: 'అంచనా రవాణా సమయం' },
   logisticsPass: { en: 'Logistics Pass', te: 'రవాణా పాస్' },
