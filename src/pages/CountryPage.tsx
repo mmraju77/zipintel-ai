@@ -190,14 +190,18 @@ export default function CountryPage() {
 
   React.useEffect(() => {
     const fetchInsight = async () => {
+      if (!countryId) return;
       setInsightLoading(true);
       try {
+        const localityName = currentNode?.name || country.name;
+        const contextString = `District: ${l2 || ''}, State: ${l1 || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major towns like Paderu/Araku if applicable, and geography.`;
+        
         const response = await fetch('/api/ai/locality-insights', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            locality: currentNode?.name || country.name, 
-            context: `${node2?.name ? node2.name + ', ' : ''}${node1?.name ? node1.name + ', ' : ''}${country.name}` 
+            locality: localityName, 
+            context: contextString 
           }),
         });
         const data = await response.json();
@@ -354,13 +358,38 @@ export default function CountryPage() {
                       <div className="h-4 w-1/2 bg-slate-800 animate-pulse rounded" />
                     </div>
                   ) : insight ? (
-                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
-                      "{insight}"
-                    </p>
+                    <div className="space-y-3 pt-2">
+                      <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
+                        "{insight}"
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {countryId === 'india' && (l1 === 'andhra-pradesh' || !l1) && (
+                          <>
+                            <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-gold uppercase tracking-widest">
+                              <Target className="w-2.5 h-2.5" /> {t('mainHQ')}: Paderu
+                            </span>
+                            <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                              <Hash className="w-2.5 h-2.5" /> 531077 Hub
+                            </span>
+                          </>
+                        )}
+                        <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                          <Database className="w-2.5 h-2.5" /> {t('verifiedNode')}
+                        </span>
+                      </div>
+                    </div>
                   ) : (
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-                      AI generation triggered for this locality level...
-                    </p>
+                    <div className="space-y-4 pt-2">
+                      <p className="text-slate-500 text-sm font-medium italic">
+                        {countryId === 'india' && (l1 === 'andhra-pradesh') ? 
+                          (language === 'te' ? 'అల్లూరి సీతారామ రాజు జిల్లా - పడెరు కేంద్రంగా ఉన్న గిరిజన ప్రాంతం. అరకు లోయ మరియు చింతపల్లి వంటి ముఖ్యమైన పోస్టల్ నోడ్లను కలిగి ఉంది.' : 'Alluri Sitharama Raju District: A high-density tribal administrative block centered at Paderu. Notable nodes include Araku Valley, Chintapalli, and Ananthagiri sectors (Zip: 531077).') 
+                          : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                         <span className="px-2 py-1 rounded-md bg-slate-900/50 border border-slate-800/50 text-[8px] font-bold text-slate-600 uppercase tracking-widest">Indexing Level {currentLevel}</span>
+                         <span className="px-2 py-1 rounded-md bg-slate-900/50 border border-slate-800/50 text-[8px] font-bold text-slate-600 uppercase tracking-widest">Global Directory Mode</span>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

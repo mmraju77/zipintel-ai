@@ -29,6 +29,10 @@ const translations: Translations = {
   efficiency: { en: 'Branch Efficiency', te: 'బ్రాంచ్ సామర్థ్యం' },
   branchDensity: { en: 'Branch Density', te: 'బ్రాంచ్ సాంద్రత' },
   transitInsight: { en: 'Transit Insight', te: 'రవాణా వివరాలు' },
+  mainHQ: { en: 'Main HQ', te: 'ప్రధాన కేంద్రం' },
+  totalBranches: { en: 'Postal Hubs', te: 'పోస్టల్ హబ్‌లు' },
+  verifiedNode: { en: 'Verified Node', te: 'ధృవీకరించబడిన నోడ్' },
+  adminLevel: { en: 'Admin Level', te: 'పరిపాలనా స్థాయి' },
   
   // Sections
   globalDirectories: { en: 'Global Directories', te: 'గ్లోబల్ డైరెక్టరీలు' },
