@@ -184,6 +184,18 @@ export default function CountryPage() {
 
   const displayItems = items.length > 0 ? items : fetchedItems;
 
+  // Dynamic PIN mapping for Alluri District
+  const getAlluriPin = (locality: string) => {
+    const name = locality.toLowerCase();
+    if (name.includes('araku')) return '531151';
+    if (name.includes('chintapalli')) return '531111';
+    if (name.includes('hukumpeta')) return '531077';
+    if (name.includes('paderu')) return '531024';
+    return '531077'; // Fallback for the district hub area
+  };
+
+  const currentPin = countryId === 'india' && l1 === 'andhra-pradesh' ? getAlluriPin(currentNode?.name || '') : '531077';
+
   // AI Locality Insights logic
   const [insight, setInsight] = React.useState<string>('');
   const [insightLoading, setInsightLoading] = React.useState<boolean>(false);
@@ -366,10 +378,10 @@ export default function CountryPage() {
                         {countryId === 'india' && (l1 === 'andhra-pradesh' || !l1) && (
                           <>
                             <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-gold uppercase tracking-widest">
-                              <Target className="w-2.5 h-2.5" /> {t('mainHQ')}: Paderu
+                              <Target className="w-2.5 h-2.5" /> {t('mainHQ')}: {l2 === 'alluri-sitharama-raju' && !l3 ? 'Paderu' : (currentNode?.name || 'Paderu')}
                             </span>
                             <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-slate-400 uppercase tracking-widest">
-                              <Hash className="w-2.5 h-2.5" /> 531077 Hub
+                              <Hash className="w-2.5 h-2.5" /> PIN: {currentPin}
                             </span>
                           </>
                         )}
@@ -382,7 +394,7 @@ export default function CountryPage() {
                     <div className="space-y-4 pt-2">
                       <p className="text-slate-500 text-sm font-medium italic">
                         {countryId === 'india' && (l1 === 'andhra-pradesh') ? 
-                          (language === 'te' ? 'అల్లూరి సీతారామ రాజు జిల్లా - పడెరు కేంద్రంగా ఉన్న గిరిజన ప్రాంతం. అరకు లోయ మరియు చింతపల్లి వంటి ముఖ్యమైన పోస్టల్ నోడ్లను కలిగి ఉంది.' : 'Alluri Sitharama Raju District: A high-density tribal administrative block centered at Paderu. Notable nodes include Araku Valley, Chintapalli, and Ananthagiri sectors (Zip: 531077).') 
+                          (language === 'te' ? `${currentNode?.name || 'అల్లూరి సీతారామ రాజు'} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${currentNode?.name || 'Alluri Sitharama Raju District'}: A high-density tribal administrative block. Verified postal node: ${currentPin}.`) 
                           : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
                       </p>
                       <div className="flex flex-wrap gap-2">
