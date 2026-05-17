@@ -7,6 +7,8 @@ import { POSTAL_DATA } from '../data/postalData';
 import { POSTAL_FRAMEWORK, DistrictData } from '../data/postalFramework';
 import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download, Target } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { GeoRadar } from '../components/GeoRadar';
+import { DistanceCalculator } from '../components/DistanceCalculator';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
@@ -687,169 +689,23 @@ export default function CountryPage() {
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4"
         >
-          {/* Visual Mini-Map Component */}
-          <div className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden h-[400px] relative group shadow-2xl">
-            <div className={`absolute inset-0 opacity-40 grayscale contrast-125 group-hover:scale-105 transition-transform duration-[10s]`}
-                 style={{ backgroundImage: `url(https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${pSeoCoords.lng},${pSeoCoords.lat},10,0/800x600?access_token=pk.eyJ1IjoiYm90LWNvZGVyIiwiYSI6ImNreG96Ym8xejAwNjIyd3BneHR4eHR4eHR4In0=)` }} />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-            
-            {/* Radar Rings Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                <motion.div 
-                  animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="absolute -inset-16 rounded-full border border-gold/30" 
-                />
-                <motion.div 
-                  animate={{ scale: [1, 2, 1], opacity: [0.2, 0, 0.2] }}
-                  transition={{ duration: 6, repeat: Infinity }}
-                  className="absolute -inset-32 rounded-full border border-gold/10" 
-                />
-                <div className="w-5 h-5 bg-gold rounded-full shadow-[0_0_30px_rgba(212,175,55,0.8)] relative z-10 border-2 border-white/20" />
-              </div>
-            </div>
+          <GeoRadar 
+            district={districtId || ''} 
+            coords={pSeoCoords} 
+            language={language} 
+          />
 
-            <div className="absolute top-6 left-6 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/80 border border-gold/20 backdrop-blur-md">
-              <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-              <span className="text-[10px] font-black text-gold uppercase tracking-[0.2em]">{language === 'te' ? 'జియో-రాడార్ యాక్టివ్' : 'Geo-Radar Active'}</span>
-            </div>
-
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 backdrop-blur-xl space-y-1">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{language === 'te' ? 'ప్రాంతీయ ఫోకస్' : 'REGIONAL FOCUS'}</p>
-                <p className="text-lg font-black text-white italic uppercase tracking-tighter">
-                  {districtName || (frameworkDistrict ? (language === 'te' ? frameworkDistrict.nameTe : frameworkDistrict.nameEn) : country.name)} SECTOR-01
-                </p>
-                <div className="flex gap-2 pt-2">
-                  <span className="text-[8px] font-bold text-gold px-2 py-0.5 bg-gold/10 rounded border border-gold/20">GIS INDEXED</span>
-                  <span className="text-[8px] font-bold text-slate-500 px-2 py-0.5 bg-slate-900 rounded border border-slate-800 uppercase italic">Coordinates: {pSeoCoords.lat}° N, {pSeoCoords.lng}° E</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Postal Distance Calculator Component */}
-          <div className="glass-card p-8 flex flex-col justify-center space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                <Zap className="w-6 h-6 text-gold" />
-              </div>
-              <div className="space-y-0.5">
-                <h3 className="text-xl font-black text-white uppercase tracking-widest italic">{language === 'te' ? 'తపాలా దూర గణన' : 'Postal Distance Calculator'}</h3>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{language === 'te' ? 'లాజిస్టిక్స్ అంచనా వేయండి' : 'Estimate Logistics Coverage'}</p>
-              </div>
-            </div>
-
-            <form onSubmit={handleCalculateDistance} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block">{language === 'te' ? 'ప్రారంభం' : 'Source Area'}</label>
-                  <input
-                    value={distSource}
-                    onChange={(e) => setDistSource(e.target.value)}
-                    placeholder={language === 'te' ? 'పిన్ కోడ్ / ప్రాంతం' : 'PIN / Area'}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-3 text-sm text-white focus:outline-none focus:border-gold/50 transition-all font-bold"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block">{language === 'te' ? 'గమ్యం' : 'Destination Area'}</label>
-                  <input
-                    value={distDest}
-                    onChange={(e) => setDistDest(e.target.value)}
-                    placeholder={language === 'te' ? 'పిన్ కోడ్ / ప్రాంతం' : 'PIN / Area'}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-3 text-sm text-white focus:outline-none focus:border-gold/50 transition-all font-bold"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={distLoading || !distSource || !distDest}
-                className="w-full h-14 bg-gold hover:bg-gold/80 hover:scale-[1.02] active:scale-[0.98] text-midnight rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 shadow-[0_10px_30px_rgba(212,175,55,0.2)]"
-              >
-                {distLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    {language === 'te' ? 'దూరాన్ని లెక్కించండి' : 'Calculate Distance'} <ChevronRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <AnimatePresence mode="wait">
-              {distResult ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="p-6 rounded-2xl bg-slate-950 border border-gold/30 border-l-4 border-l-gold space-y-5 shadow-[0_0_40px_rgba(212,175,55,0.05)]"
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-                      <span className="text-[10px] font-black text-gold uppercase tracking-[0.2em]">{t('logisticsStatus')}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                       <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[7px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-1">
-                         <ShieldCheck className="w-2.5 h-2.5" /> {t('verifiedAcquisition')}: {t('accurate100')}
-                       </span>
-                       <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-8 relative">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 opacity-50">
-                        <Zap className="w-3 h-3 text-gold" />
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t('geospatialDistance')}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.distance}</p>
-                        {distResult.isHighway && (
-                          <span className="px-1.5 py-0.5 rounded-sm bg-gold/10 border border-gold/20 text-[7px] font-black text-gold uppercase tracking-widest flex items-center gap-1">
-                            <Target className="w-2 h-2" /> {t('highwayRoutingActive')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 opacity-50">
-                        <Loader2 className="w-3 h-3 text-gold" />
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t('estCourierTransit')}</p>
-                      </div>
-                      <p className="text-2xl font-black text-white italic tracking-tighter">{distResult.estimate}</p>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mt-0.5">
-                         {t('routingIntegrity')}: <span className="text-emerald-500">{t('secureActive')}</span>
-                       </span>
-                    </div>
-                    <div className="flex gap-1">
-                       <div className="w-1 h-1 rounded-full bg-emerald-500" />
-                       <div className="w-1 h-1 rounded-full bg-emerald-500/50" />
-                       <div className="w-1 h-1 rounded-full bg-emerald-500/20" />
-                    </div>
-                  </div>
-
-                  <p className="text-[10px] text-slate-500 font-medium italic border-l border-gold/20 pl-3">
-                    "{distResult.insight}"
-                  </p>
-                </motion.div>
-              ) : (
-                <div className="h-32 rounded-3xl border-2 border-dashed border-slate-800/50 flex flex-col items-center justify-center gap-2 bg-slate-900/20">
-                  <div className="w-8 h-8 rounded-full border border-slate-800 flex items-center justify-center">
-                    <Target className="w-4 h-4 text-slate-700" />
-                  </div>
-                  <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] italic">Awaiting Logistical Inputs...</p>
-                </div>
-              )}
-            </AnimatePresence>
-          </div>
+          <DistanceCalculator
+            district={districtId || ''}
+            language={language}
+            distSource={distSource}
+            setDistSource={setDistSource}
+            distDest={distDest}
+            setDistDest={setDistDest}
+            distResult={distResult}
+            distLoading={distLoading}
+            onCalculate={handleCalculateDistance}
+          />
         </motion.div>
       )}
 
