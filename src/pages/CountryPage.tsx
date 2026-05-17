@@ -205,6 +205,35 @@ export default function CountryPage() {
   const [insight, setInsight] = React.useState<string>('');
   const [insightLoading, setInsightLoading] = React.useState<boolean>(false);
 
+  // Distance Calculator State
+  const [distSource, setDistSource] = React.useState<string>('');
+  const [distDest, setDistDest] = React.useState<string>('');
+  const [distResult, setDistResult] = React.useState<any>(null);
+  const [distLoading, setDistLoading] = React.useState<boolean>(false);
+
+  const handleCalculateDistance = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!distSource || !distDest) return;
+    setDistLoading(true);
+    setDistResult(null);
+
+    try {
+      const response = await fetch('/api/ai/calculate-distance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: distSource, destination: distDest }),
+      });
+      const data = await response.json();
+      if (data.distance) {
+        setDistResult(data);
+      }
+    } catch (error) {
+      console.error('Distance calc error:', error);
+    } finally {
+      setDistLoading(false);
+    }
+  };
+
   React.useEffect(() => {
     const fetchInsight = async () => {
       if (!countryId) return;
@@ -381,11 +410,11 @@ export default function CountryPage() {
                       </p>
                       
                       {l2 === 'alluri-sitharama-raju' && !l3 && (
-                        <div className="space-y-3">
+                        <div className="space-y-6">
                           <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{language === 'te' ? 'జిల్లా ఉప-విభాగాలు (మండలాలు)' : 'District Sub-divisions (Mandals)'}</p>
                           <div className="grid grid-cols-2 gap-2">
                             {ALLURI_MANDALS.map((m) => (
-                              <div key={m.id} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between group hover:border-gold/30 transition-colors">
+                              <div key={m.id} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between group hover:border-gold/30 transition-colors cursor-pointer">
                                 <div className="space-y-1">
                                   <p className="text-[10px] font-black text-slate-200 uppercase tracking-tight">{language === 'te' ? m.te : m.en}</p>
                                   <p className="text-[9px] font-bold text-gold uppercase tracking-widest flex items-center gap-1">
@@ -395,6 +424,112 @@ export default function CountryPage() {
                                 <ChevronRight className="w-3 h-3 text-slate-700 group-hover:text-gold transition-colors" />
                               </div>
                             ))}
+                          </div>
+
+                          {/* Visual Mini-Map Component */}
+                          <div className="mt-6 rounded-2xl bg-slate-950 border border-gold/20 overflow-hidden h-48 relative group">
+                            <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/82.5,18.5,8,0/600x400?access_token=pk.eyJ1IjoiYm90LWNvZGVyIiwiYSI6ImNreG96Ym8xejAwNjIyd3BneHR4eHR4eHR4In0=')] opacity-30 grayscale contrast-150 transition-transform duration-[5s] group-hover:scale-110" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                            
+                            {/* Radar Rings */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="relative">
+                                <div className="absolute -inset-8 rounded-full border border-gold/20 animate-ping opacity-20" />
+                                <div className="absolute -inset-16 rounded-full border border-gold/10 animate-[ping_3s_linear_infinite] opacity-10" />
+                                <div className="w-4 h-4 bg-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.8)] relative z-10" />
+                              </div>
+                            </div>
+                            
+                            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                              <div className="space-y-1">
+                                <p className="text-[8px] font-black text-gold uppercase tracking-[0.2em]">{language === 'te' ? 'జియో-సెంటర్డ్ రాడార్' : 'Geo-Centered Radar'}</p>
+                                <p className="text-[10px] font-black text-white uppercase italic">{currentNode?.name || country.name} SEC-01</p>
+                              </div>
+                              <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950/80 border border-gold/20">
+                                <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                                <span className="text-[8px] font-black text-gold uppercase tracking-widest">Active</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Distance Calculator Component */}
+                          <div className="mt-8 pt-8 border-t border-slate-800 space-y-6">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                                <Zap className="w-4 h-4 text-gold" />
+                              </div>
+                              <h3 className="text-sm font-black text-white uppercase tracking-widest italic">{t('distanceCalculator')}</h3>
+                            </div>
+
+                            <form onSubmit={handleCalculateDistance} className="grid grid-cols-1 gap-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block">{t('source')}</label>
+                                  <input
+                                    value={distSource}
+                                    onChange={(e) => setDistSource(e.target.value)}
+                                    placeholder="Source PIN"
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-gold/50 transition-all font-bold tracking-tight"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block">{t('destination')}</label>
+                                  <input
+                                    value={distDest}
+                                    onChange={(e) => setDistDest(e.target.value)}
+                                    placeholder="Dest PIN"
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-gold/50 transition-all font-bold tracking-tight"
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                type="submit"
+                                disabled={distLoading || !distSource || !distDest}
+                                className="w-full h-12 bg-gold hover:bg-gold/80 text-midnight rounded-xl font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+                              >
+                                {distLoading ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    {t('calculate')} <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                  </>
+                                )}
+                              </button>
+                            </form>
+
+                            <AnimatePresence>
+                              {distResult && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="p-5 rounded-2xl bg-[#020617] border border-gold/30 border-l-4 space-y-4">
+                                    <div className="flex justify-between items-center">
+                                      <div className="flex items-center gap-2">
+                                        <Database className="w-3 h-3 text-gold" />
+                                        <span className="text-[10px] font-black text-gold uppercase tracking-[0.2em]">{t('logisticsStatus')}</span>
+                                      </div>
+                                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">{t('logisticsPass')}: GREEN</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('transitInsight')}</p>
+                                        <p className="text-xl font-black text-white italic">{distResult.distance}</p>
+                                      </div>
+                                      <div>
+                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('transitTime')}</p>
+                                        <p className="text-xl font-black text-white italic">{distResult.estimate || '~45 Mins'}</p>
+                                      </div>
+                                    </div>
+                                    <div className="pt-3 border-t border-slate-800">
+                                      <p className="text-[10px] text-slate-400 font-medium italic">"{distResult.insight}"</p>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         </div>
                       )}
