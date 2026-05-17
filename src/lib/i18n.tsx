@@ -21,6 +21,14 @@ const translations: Translations = {
   heroSubtitle: { en: 'Access hyper-structured regional datasets across 184 countries. Powered by AI normalization and real-time utility mapping.', te: '184 దేశాలలో హైపర్-స్ట్రక్చర్డ్ ప్రాంతీయ డేటాసెట్లను యాక్సెస్ చేయండి. AI క్రమబద్ధీకరణ మరియు రియల్-టైమ్ యుటిలిటీ మ్యాపింగ్ ద్వారా ఆధారితం.' },
   searchPlaceholder: { en: 'Search PIN, Area, or Region (e.g. 531077 or California)', te: 'పిన్, ప్రాంతం లేదా రీజియన్ కోసం వెతకండి (ఉదా. 531077 లేదా కాలిఫోర్నియా)' },
   analyze: { en: 'Analyze', te: 'విశ్లేషించండి' },
+  distanceCalculator: { en: 'Distance Calculator', te: 'దూర గణన' },
+  source: { en: 'Source PIN/Area', te: 'ప్రారంభ ప్రాంతం' },
+  destination: { en: 'Destination PIN/Area', te: 'గమ్యస్థానం' },
+  calculate: { en: 'Calculate Distance', te: 'దూరాన్ని లెక్కించండి' },
+  analytics: { en: 'Network Analytics', te: 'నెట్‌వర్క్ విశ్లేషణ' },
+  efficiency: { en: 'Branch Efficiency', te: 'బ్రాంచ్ సామర్థ్యం' },
+  branchDensity: { en: 'Branch Density', te: 'బ్రాంచ్ సాంద్రత' },
+  transitInsight: { en: 'Transit Insight', te: 'రవాణా వివరాలు' },
   
   // Sections
   globalDirectories: { en: 'Global Directories', te: 'గ్లోబల్ డైరెక్టరీలు' },

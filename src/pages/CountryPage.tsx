@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES, Region, SearchResult } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
-import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download } from 'lucide-react';
+import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download, Target } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
 
 export default function CountryPage() {
@@ -332,39 +332,137 @@ export default function CountryPage() {
         </div>
 
         {/* AI Insight Widget */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mt-8 p-6 rounded-2xl bg-gold/5 border border-gold/10 backdrop-blur-sm relative overflow-hidden group"
-        >
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-midnight flex items-center justify-center border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]">
-              <Sparkles className={`w-5 h-5 text-gold ${insightLoading ? 'animate-pulse' : ''}`} />
-            </div>
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black text-gold uppercase tracking-widest italic">AI Locality Insight</span>
-                <span className="text-[8px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500 font-bold border border-slate-800 uppercase">Beta</span>
-              </div>
-              {insightLoading ? (
-                <div className="space-y-2 pt-1">
-                  <div className="h-4 w-3/4 bg-slate-800 animate-pulse rounded" />
-                  <div className="h-4 w-1/2 bg-slate-800 animate-pulse rounded" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-8 rounded-3xl bg-gold/5 border border-gold/10 backdrop-blur-sm relative overflow-hidden group h-full"
+            >
+              <div className="flex items-start gap-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-midnight flex items-center justify-center border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]">
+                  <Sparkles className={`w-5 h-5 text-gold ${insightLoading ? 'animate-pulse' : ''}`} />
                 </div>
-              ) : insight ? (
-                <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
-                  "{insight}"
-                </p>
-              ) : (
-                <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-                  AI generation triggered for this locality level...
-                </p>
-              )}
-            </div>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-gold uppercase tracking-widest italic">{t('localityBriefing')}</span>
+                    <span className="text-[8px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500 font-bold border border-slate-800 uppercase">Neural Insight</span>
+                  </div>
+                  {insightLoading ? (
+                    <div className="space-y-2 pt-1">
+                      <div className="h-4 w-3/4 bg-slate-800 animate-pulse rounded" />
+                      <div className="h-4 w-1/2 bg-slate-800 animate-pulse rounded" />
+                    </div>
+                  ) : insight ? (
+                    <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
+                      "{insight}"
+                    </p>
+                  ) : (
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
+                      AI generation triggered for this locality level...
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-gold/5 blur-3xl rounded-full" />
+            </motion.div>
+
+            {/* Interactive Map Viewport */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-3xl bg-slate-900/50 border border-slate-800 overflow-hidden h-64 relative group"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.google.com/maps/vt/pb=!1m4!1m3!1i10!2i145!3i92!2m3!1e0!2sm!3i633000000!3m8!2sen!3sus!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!5f2')] opacity-20 grayscale contrast-125 group-hover:opacity-40 transition-all duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center space-y-2 p-6 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-slate-800 w-3/4">
+                  <MapPin className="w-8 h-8 text-gold mx-auto animate-bounce mb-2" />
+                  <p className="text-[10px] font-black text-slate-200 uppercase tracking-widest">{currentNode?.name || country.name} Region</p>
+                  <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800">Verified Node</span>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 italic uppercase">GIS Active</span>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute top-4 right-4 flex gap-2">
+                <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                <div className="text-[10px] font-black text-gold uppercase tracking-widest">Live Node</div>
+              </div>
+            </motion.div>
           </div>
-          {/* Background Accent */}
-          <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-gold/5 blur-3xl rounded-full" />
-        </motion.div>
+
+          {/* Analytics Dashboard */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="p-8 rounded-3xl bg-slate-900/50 border border-slate-800 backdrop-blur-xl group h-full"
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center">
+                <Database className="w-5 h-5 text-gold" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-100 uppercase tracking-tight italic">{t('analytics')}</h2>
+            </div>
+
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('efficiency')}</p>
+                  <p className="text-lg font-black text-gold">94.2%</p>
+                </div>
+                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "94.2%" }}
+                    transition={{ duration: 1.5 }}
+                    className="h-full bg-gold"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('branchDensity')}</p>
+                  <p className="text-lg font-black text-slate-100">High</p>
+                </div>
+                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "78%" }}
+                    transition={{ duration: 1.5, delay: 0.2 }}
+                    className="h-full bg-slate-100"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-3 h-3 text-gold" />
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Head Nodes</span>
+                  </div>
+                  <p className="text-xl font-black text-slate-100">12</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-3 h-3 text-gold" />
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Links</span>
+                  </div>
+                  <p className="text-xl font-black text-slate-100">1.4K</p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[10px] font-black text-gold uppercase tracking-[0.2em] mb-1">Status Report</p>
+                  <p className="text-xs text-slate-400 line-clamp-2 italic">Geospatial verification confirmed. Area operational status is within baseline parameters.</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
         
         <div className="absolute top-0 right-0 w-1/2 h-full opacity-5 pointer-events-none overflow-hidden">
            <MapPin className="w-[300px] h-[300px] absolute -right-10 -top-10 text-gold" />

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'motion/react';
-import { Zap, Copy, Check, Loader2, Sparkles, Languages, Search, Hash, Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Zap, Copy, Check, Loader2, Sparkles, Languages, Search, Hash, Download, MapPin, Database, ArrowLeft, Target, Cpu, Shield } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { Link } from 'react-router-dom';
 
 export default function AITools() {
   const { t } = useI18n();
@@ -14,6 +15,11 @@ export default function AITools() {
   const [insightLoading, setInsightLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [distSource, setDistSource] = useState("");
+  const [distDest, setDistDest] = useState("");
+  const [distResult, setDistResult] = useState<any>(null);
+  const [distLoading, setDistLoading] = useState(false);
 
   const handleStandardize = async () => {
     if (!address.trim()) return;
@@ -68,6 +74,33 @@ export default function AITools() {
       setInsight(`${postalQuery} matched in local verified index. High density area with established postal nodes. Communication status: STABLE.`);
     } finally {
       setInsightLoading(false);
+    }
+  };
+
+  const handleCalculateDistance = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!distSource || !distDest) return;
+    setDistLoading(true);
+    setDistResult(null);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/ai/calculate-distance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: distSource, destination: distDest }),
+      });
+      const data = await response.json();
+      if (data.distance) {
+        setDistResult(data);
+      } else if (data.message) {
+        setError(data.message);
+      }
+    } catch (error: any) {
+      console.error('Distance calculation error:', error);
+      setError("Distance calculation node offline.");
+    } finally {
+      setDistLoading(false);
     }
   };
 
@@ -255,10 +288,92 @@ export default function AITools() {
             )}
           </motion.div>
 
-          {/* Tool 2: Locality Insights */}
+          {/* Tool 2: Distance Calculator */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
+            className="glass-card flex flex-col overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.5)] border-white/5"
+          >
+            <div className="p-8 lg:p-10 space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-midnight flex items-center justify-center border border-gold/30">
+                  <MapPin className="w-7 h-7 text-gold" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-white uppercase italic leading-tight">{t('distanceCalculator')}</h2>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[3px]">Geospatial Routing Node</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleCalculateDistance} className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 block italic">{t('source')}</label>
+                    <input
+                      value={distSource}
+                      onChange={(e) => setDistSource(e.target.value)}
+                      placeholder="e.g. 531077 or Hukumpeta"
+                      className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-gold/50 focus:bg-slate-900/60 transition-all font-medium text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 block italic">{t('destination')}</label>
+                    <input
+                      value={distDest}
+                      onChange={(e) => setDistDest(e.target.value)}
+                      placeholder="e.g. 530001 or Vizag"
+                      className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-gold/50 focus:bg-slate-900/60 transition-all font-medium text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <button
+                  disabled={distLoading || !distSource.trim() || !distDest.trim()}
+                  className="w-full bg-slate-800 hover:bg-slate-700 text-white py-4 rounded-xl flex items-center justify-center gap-3 border border-slate-700 transition-all"
+                >
+                  {distLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      <Target className="w-5 h-5 text-gold" />
+                      <span className="uppercase text-xs tracking-[4px] font-black italic">{t('calculate')}</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {distResult && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="bg-slate-900/90 border-t border-slate-800 p-8 lg:p-10"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Database className="w-3 h-3 text-gold" />
+                    <span className="text-[10px] font-black text-gold uppercase tracking-[3px] italic">{t('transitInsight')}</span>
+                  </div>
+                  <span className="text-xl font-black text-white">{distResult.distance}</span>
+                </div>
+                <div className="bg-[#020617] p-6 rounded-2xl border border-gold/20 border-l-4 space-y-3">
+                  <p className="text-slate-300 text-sm font-medium leading-relaxed italic">
+                    "{distResult.insight}"
+                  </p>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+                    <Zap className="w-3 h-3 text-gold" /> Estimated Time: {distResult.estimate}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Tool 3: Locality Insights */}
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className="glass-card flex flex-col overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.5)] border-white/5"
           >
             <div className="p-8 lg:p-10 space-y-8">

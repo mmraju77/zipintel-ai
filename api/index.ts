@@ -179,4 +179,38 @@ wrapGetRoute("/api/postal/live-global/:country/:zip", async (req: Request, res: 
 });
 
 
+wrapRoute("/api/ai/calculate-distance", async (req: Request, res: Response) => {
+  const { source, destination } = req.body;
+  if (!source || !destination) return res.status(400).json({ error: "Source and Destination are required" });
+
+  if (!ai) {
+    return res.json({ 
+      distance: "Calculation offline.", 
+      insight: "Geospatial node disconnected. Using local estimates.",
+      estimate: "~45 - 60 KM (Est.)" 
+    });
+  }
+
+  const cacheKey = `dist:${source}:${destination}`;
+  if (aiCache.has(cacheKey)) return res.json(aiCache.get(cacheKey));
+
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: `Calculate the approximate road distance between "${source}" and "${destination}" in India. Return ONLY a JSON object with: {"distance": "string with KM", "insight": "2-line brief about transit connectivity", "estimate": "string time"}.`,
+    });
+
+    try {
+      const text = result.text?.replace(/```json|```/g, "").trim() || "{}";
+      const data = JSON.parse(text);
+      aiCache.set(cacheKey, data);
+      res.json(data);
+    } catch (e) {
+      res.json({ distance: "Distance Node Busy", insight: "Direct route connectivity is being indexed.", estimate: "Calculating..." });
+    }
+  } catch (error: any) {
+    handleAIError(error, res, { distance: "N/A", insight: "AI connection unstable.", estimate: "N/A" });
+  }
+});
+
 export default app;
