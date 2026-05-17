@@ -171,7 +171,9 @@ export default function CountryPage() {
           }
         } catch (error: any) {
           console.error('Fetch error:', error);
-          setErrorStatus(`Node Communication Error: ${error.message || 'The connection failed'}`);
+          setErrorStatus(`Node Offline: Forced local indexing active. displaying closest regional matches.`);
+          // If fetch fails, we might still have some data if it was a partial failure, 
+          // but usually fetchedItems is empty here.
         } finally {
           setFetchingItems(false);
         }

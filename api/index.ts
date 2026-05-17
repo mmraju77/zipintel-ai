@@ -11,7 +11,7 @@ app.use(express.json());
 // Initialize Gemini with safety checks
 const getAIClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey === "missing-key") {
+  if (!apiKey || apiKey === "missing-key" || apiKey.includes("your-api-key")) {
     console.warn("GEMINI_API_KEY is not set or invalid. AI features will be limited.");
     return null;
   }
@@ -22,6 +22,15 @@ const ai = getAIClient();
 
 // Simple in-memory cache to reduce AI quota consumption
 const aiCache = new Map<string, any>();
+
+// API Status Route
+app.get("/api/health", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    aiMode: ai ? "HYBRID_NEURAL" : "OPTIMIZED_LOCAL",
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Helper for structured AI errors
 const handleAIError = (error: any, res: Response, fallbackValue: any = null) => {

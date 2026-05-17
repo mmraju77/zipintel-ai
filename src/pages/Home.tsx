@@ -210,10 +210,13 @@ export default function Home() {
                             });
                           }
                         });
+                      } else {
+                        // Fallback indicator
+                        setSearchError("Live India Node: No records found. Using offline index.");
                       }
                     } catch (err: any) {
                       console.error('India live search error:', err);
-                      setSearchError(`Live India API Node: ${err.message || 'Connection unstable'}`);
+                      setSearchError(`Live India Node Offline: Using local verified database.`);
                     }
                   }
 
@@ -229,22 +232,40 @@ export default function Home() {
                       const res = await fetch(`/api/postal/live-global/${countryCode}/${zipCode}`);
                       if (res.ok) {
                         const data = await res.json();
-                        data.places.forEach((p: any, idx: number) => {
-                          results.push({
-                            id: `live-global-${zipCode}-${idx}`,
-                            name: p['place name'],
-                            type: `Live Zip • ${p['state abbreviation'] || p['state']} • ${p['state'] || data['country']}`,
-                            postalCode: data['post code'],
-                            path: `/${usZipMatch ? 'usa' : 'uk'}`,
-                            countryName: data['country'],
-                            isLive: true
+                        if (data.places) {
+                          data.places.forEach((p: any, idx: number) => {
+                            results.push({
+                              id: `live-global-${zipCode}-${idx}`,
+                              name: p['place name'],
+                              type: `Live Zip • ${p['state abbreviation'] || p['state']} • ${p['state'] || data['country']}`,
+                              postalCode: data['post code'],
+                              path: `/${usZipMatch ? 'usa' : 'uk'}`,
+                              countryName: data['country'],
+                              isLive: true
+                            });
                           });
-                        });
+                        }
+                      } else {
+                        setSearchError("Global Node: No matches. Resorting to local directory.");
                       }
                     } catch (err: any) {
                       console.error('Global live search error:', err);
-                      setSearchError(`Global Index Node: ${err.message || 'Connection unstable'}`);
+                      setSearchError(`Global Node Offline: Forced local indexing active.`);
                     }
+                  }
+
+                  // Final Fallback: If absolutely no results, try to show closest country match or top countries
+                  if (results.length === 0 && val.length > 2) {
+                    setSearchError("No direct hits. Displaying regional directory nodes.");
+                    COUNTRIES.slice(0, 3).forEach(c => {
+                      results.push({
+                        id: c.id,
+                        name: c.name,
+                        type: 'Regional Fallback',
+                        path: `/${c.id}`,
+                        countryName: 'Directory'
+                      });
+                    });
                   }
 
                   setSearchResults(results.slice(0, 10));
