@@ -208,6 +208,13 @@ export default function CountryPage() {
   const [distResult, setDistResult] = React.useState<any>(null);
   const [distLoading, setDistLoading] = React.useState<boolean>(false);
 
+  // Reset calculator states on route change
+  React.useEffect(() => {
+    setDistSource('');
+    setDistDest('');
+    setDistResult(null);
+  }, [districtId, localityId]);
+
   const handleCalculateDistance = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!distSource || !distDest) return;
@@ -237,7 +244,7 @@ export default function CountryPage() {
       setInsightLoading(true);
       try {
         const localityName = currentNode?.name || country.name;
-        const contextString = `District: ${districtId || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major towns like Paderu/Araku if applicable, and geography.`;
+        const contextString = `District: ${districtId || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major regional nodes, and the general geographical connectivity and logistical landscape.`;
         
         const response = await fetch('/api/ai/locality-insights', {
           method: 'POST',
@@ -445,7 +452,7 @@ export default function CountryPage() {
                     <div className="space-y-4 pt-2">
                       <p className="text-slate-500 text-sm font-medium italic">
                         {isPseoActive ? 
-                          (language === 'te' ? `${frameworkDistrict.nameTe} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${frameworkDistrict.nameEn}: Verified regional administrative block. Primary postal node: ${currentPin}.`) 
+                          (language === 'te' ? `${frameworkDistrict.nameTe} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${frameworkDistrict.nameEn}: Verified regional administrative block. Logistical connectivity active. Primary postal node: ${currentPin}.`) 
                           : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
                       </p>
 
