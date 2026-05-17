@@ -10,7 +10,10 @@ import { useI18n } from '../lib/i18n';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
-  const { countryId, l1, l2, l3 } = useParams<{ countryId: string; l1?: string; l2?: string; l3?: string }>();
+  const { countryId, l1: stateId, l2: districtId, l3: localityId } = useParams<{ countryId: string; l1?: string; l2?: string; l3?: string }>();
+  
+  const districtName = districtId ? districtId.replace(/-/g, ' ').toUpperCase() : '';
+  
   const navigate = useNavigate();
   const country = COUNTRIES.find(c => c.id === countryId);
   const data = POSTAL_DATA[countryId || ''] || [];
@@ -77,18 +80,18 @@ export default function CountryPage() {
   if (!country) return <div className="p-8 text-center text-slate-400">Country not found</div>;
 
   // Resolve hierarchy nodes
-  const node1 = l1 ? data.find(n => n.id === l1) : null;
-  const node2 = l2 ? node1?.subRegions?.find(n => n.id === l2) : null;
-  const node3 = l3 ? node2?.subRegions?.find(n => n.id === l3) : null;
+  const node1 = stateId ? data.find(n => n.id === stateId) : null;
+  const node2 = districtId ? node1?.subRegions?.find(n => n.id === districtId) : null;
+  const node3 = localityId ? node2?.subRegions?.find(n => n.id === localityId) : null;
 
   const currentNode = node3 || node2 || node1;
   const items = currentNode ? (currentNode.subRegions || []) : data;
-  const currentLevel = l3 ? 3 : l2 ? 2 : l1 ? 1 : 0;
+  const currentLevel = localityId ? 3 : districtId ? 2 : stateId ? 1 : 0;
   const nextLevelName = country.hierarchy[currentLevel] || 'Data';
 
   // Programmatic SEO Framework Resolution
-  const frameworkState = l1 ? POSTAL_FRAMEWORK[l1] : null;
-  const frameworkDistrict = (frameworkState && l2) ? frameworkState.districts[l2] : null;
+  const frameworkState = stateId ? POSTAL_FRAMEWORK[stateId] : null;
+  const frameworkDistrict = (frameworkState && districtId) ? frameworkState.districts[districtId] : null;
   const isPseoActive = !!frameworkDistrict;
   
   const pSeoMandals = frameworkDistrict?.mandals || [];
@@ -104,7 +107,7 @@ export default function CountryPage() {
     setFetchedItems([]);
     setErrorStatus(null);
     
-    const shouldFetch = (l1 || l2 || l3) && items.length === 0;
+    const shouldFetch = (stateId || districtId || localityId) && items.length === 0;
     
     if (shouldFetch) {
       const fetchGranular = async () => {
@@ -189,7 +192,7 @@ export default function CountryPage() {
       };
       fetchGranular();
     }
-  }, [l1, l2, l3, currentNode?.id, items.length, countryId]);
+  }, [stateId, districtId, localityId, currentNode?.id, items.length, countryId]);
 
   const displayItems = items.length > 0 ? items : fetchedItems;
 
@@ -234,7 +237,7 @@ export default function CountryPage() {
       setInsightLoading(true);
       try {
         const localityName = currentNode?.name || country.name;
-        const contextString = `District: ${l2 || ''}, State: ${l1 || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major towns like Paderu/Araku if applicable, and geography.`;
+        const contextString = `District: ${districtId || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major towns like Paderu/Araku if applicable, and geography.`;
         
         const response = await fetch('/api/ai/locality-insights', {
           method: 'POST',
@@ -310,13 +313,13 @@ export default function CountryPage() {
         <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-widest font-black">
           <Link to="/" className="hover:text-gold transition-colors">{t('home')}</Link>
           <ChevronRight className="w-3 h-3" />
-          <Link to={`/${country.id}`} className={`hover:text-gold transition-colors ${!l1 ? 'text-gold italic' : ''}`}>
+          <Link to={`/${country.id}`} className={`hover:text-gold transition-colors ${!stateId ? 'text-gold italic' : ''}`}>
             {country.name}
           </Link>
           {node1 && (
             <>
               <ChevronRight className="w-3 h-3" />
-              <Link to={`/${country.id}/${l1}`} className={`hover:text-gold transition-colors ${!l2 ? 'text-gold italic' : ''}`}>
+              <Link to={`/${country.id}/${stateId}`} className={`hover:text-gold transition-colors ${!districtId ? 'text-gold italic' : ''}`}>
                 {node1.name}
               </Link>
             </>
@@ -324,7 +327,7 @@ export default function CountryPage() {
           {node2 && (
             <>
               <ChevronRight className="w-3 h-3" />
-              <Link to={`/${country.id}/${l1}/${l2}`} className={`hover:text-gold transition-colors ${!l3 ? 'text-gold italic' : ''}`}>
+              <Link to={`/${country.id}/${stateId}/${districtId}`} className={`hover:text-gold transition-colors ${!localityId ? 'text-gold italic' : ''}`}>
                 {node2.name}
               </Link>
             </>
@@ -337,7 +340,7 @@ export default function CountryPage() {
           )}
         </div>
         
-        {l1 && (
+        {stateId && (
           <button 
             onClick={() => navigate(-1)}
             className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-tighter"
@@ -367,7 +370,7 @@ export default function CountryPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl lg:text-5xl font-black mb-4 text-white tracking-tighter uppercase italic"
           >
-            {currentNode?.name || country.name} <span className="gold-gradient-text uppercase">{l3 ? (language === 'en' ? 'DIRECTORY' : 'డైరెక్టరీ') : country.hierarchy[currentLevel]?.toUpperCase()}</span>
+            {districtName || currentNode?.name || country.name} <span className="gold-gradient-text uppercase">{localityId ? (language === 'en' ? 'DIRECTORY' : 'డైరెక్టరీ') : country.hierarchy[currentLevel]?.toUpperCase()}</span>
           </motion.h1>
           <p className="text-slate-500 text-base max-w-2xl font-medium">
             Currently viewing all <span className="text-slate-300">verified {nextLevelName.toLowerCase()}s</span> within {currentNode?.name || country.name}. 
@@ -403,7 +406,7 @@ export default function CountryPage() {
                         "{insight}"
                       </p>
                       
-                      {isPseoActive && !l3 && (
+                      {isPseoActive && !localityId && (
                         <div className="space-y-3">
                           <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{language === 'te' ? 'యూనిట్ ఉప-విభాగాలు (మండలాలు/ప్రాంతాలు)' : 'Regional Sub-divisions (Mandals/Localities)'}</p>
                           <div className="grid grid-cols-2 gap-2">
@@ -441,12 +444,12 @@ export default function CountryPage() {
                   ) : (
                     <div className="space-y-4 pt-2">
                       <p className="text-slate-500 text-sm font-medium italic">
-                        {countryId === 'india' && (l1 === 'andhra-pradesh') ? 
-                          (language === 'te' ? `${currentNode?.name || 'అల్లూరి సీతారామ రాజు'} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${currentNode?.name || 'Alluri Sitharama Raju District'}: A high-density tribal administrative block. Verified postal node: ${currentPin}.`) 
+                        {isPseoActive ? 
+                          (language === 'te' ? `${frameworkDistrict.nameTe} - ప్రాంతీయ నిర్వహణ కేంద్రం. ఈ ప్రాంతం పిన్ కోడ్: ${currentPin}.` : `${frameworkDistrict.nameEn}: Verified regional administrative block. Primary postal node: ${currentPin}.`) 
                           : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
                       </p>
 
-                      {isPseoActive && !l3 && (
+                      {isPseoActive && !localityId && (
                         <div className="grid grid-cols-2 gap-2 mt-4">
                           {pSeoMandals.map((m) => (
                             <div key={m.id} className="p-3 rounded-xl bg-slate-900/40 border border-slate-800/40 flex items-center justify-between">
@@ -483,15 +486,15 @@ export default function CountryPage() {
                   <MapPin className="w-8 h-8 text-gold mx-auto animate-bounce mb-2" />
                   <p className="text-[10px] font-black text-slate-200 uppercase tracking-widest">{currentNode?.name || country.name} Region</p>
                   <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-bold">
-                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800">Verified Node</span>
-                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 italic uppercase">GIS Active</span>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800">{isPseoActive ? 'Verified pSEO Node' : 'Verified Node'}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 italic uppercase">{isPseoActive ? 'Hardened DB' : 'GIS Active'}</span>
                   </div>
                 </div>
               </div>
-              <div className="absolute top-4 right-4 flex gap-2">
-                <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-                <div className="text-[10px] font-black text-gold uppercase tracking-widest">Live Node</div>
-              </div>
+            <div className="absolute top-4 right-4 flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+              <div className="text-[10px] font-black text-gold uppercase tracking-widest">{isPseoActive ? 'pSEO SYNC: ACTIVE' : 'Live Node'}</div>
+            </div>
             </motion.div>
           </div>
 
@@ -588,7 +591,7 @@ export default function CountryPage() {
         ) : displayItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayItems.map((item, index) => {
-              const itemPath = l3 ? '#' : l2 ? `/${countryId}/${l1}/${l2}/${item.id}` : l1 ? `/${countryId}/${l1}/${item.id}` : `/${countryId}/${item.id}`;
+              const itemPath = localityId ? '#' : districtId ? `/${countryId}/${stateId}/${districtId}/${item.id}` : stateId ? `/${countryId}/${stateId}/${item.id}` : `/${countryId}/${item.id}`;
               const searchItem: SearchResult = { ...item, path: itemPath };
               
               return (
@@ -671,7 +674,7 @@ export default function CountryPage() {
       </div>
 
       {/* Phase-3: Visual Mini-Map & Distance Calculator Injected beneath Grid */}
-      {isPseoActive && !l3 && (
+      {isPseoActive && !localityId && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -707,8 +710,10 @@ export default function CountryPage() {
 
             <div className="absolute bottom-6 left-6 right-6">
               <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 backdrop-blur-xl space-y-1">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{language === 'te' ? 'ప్రాంతీయ ఫోకస్' : 'Regional Focus'}</p>
-                <p className="text-lg font-black text-white italic uppercase tracking-tighter">{currentNode?.name || frameworkDistrict ? (language === 'te' ? frameworkDistrict.nameTe : frameworkDistrict.nameEn) : country.name} Sector-01</p>
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{language === 'te' ? 'ప్రాంతీయ ఫోకస్' : 'REGIONAL FOCUS'}</p>
+                <p className="text-lg font-black text-white italic uppercase tracking-tighter">
+                  {districtName || (frameworkDistrict ? (language === 'te' ? frameworkDistrict.nameTe : frameworkDistrict.nameEn) : country.name)} SECTOR-01
+                </p>
                 <div className="flex gap-2 pt-2">
                   <span className="text-[8px] font-bold text-gold px-2 py-0.5 bg-gold/10 rounded border border-gold/20">GIS INDEXED</span>
                   <span className="text-[8px] font-bold text-slate-500 px-2 py-0.5 bg-slate-900 rounded border border-slate-800 uppercase italic">Coordinates: {pSeoCoords.lat}° N, {pSeoCoords.lng}° E</span>
