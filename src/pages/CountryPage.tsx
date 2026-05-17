@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES, Region, SearchResult } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
+import { POSTAL_FRAMEWORK, DistrictData } from '../data/postalFramework';
 import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Sparkles, Loader2, Heart, Download, Target } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
 
@@ -84,6 +85,14 @@ export default function CountryPage() {
   const items = currentNode ? (currentNode.subRegions || []) : data;
   const currentLevel = l3 ? 3 : l2 ? 2 : l1 ? 1 : 0;
   const nextLevelName = country.hierarchy[currentLevel] || 'Data';
+
+  // Programmatic SEO Framework Resolution
+  const frameworkState = l1 ? POSTAL_FRAMEWORK[l1] : null;
+  const frameworkDistrict = (frameworkState && l2) ? frameworkState.districts[l2] : null;
+  const isPseoActive = !!frameworkDistrict;
+  
+  const pSeoMandals = frameworkDistrict?.mandals || [];
+  const pSeoCoords = frameworkDistrict?.coords || { lat: 18.08, lng: 82.66 };
 
   // Granular data fetching for missing records
   const [fetchedItems, setFetchedItems] = React.useState<Region[]>([]);
@@ -184,22 +193,7 @@ export default function CountryPage() {
 
   const displayItems = items.length > 0 ? items : fetchedItems;
 
-  // Dynamic PIN mapping for Alluri District
-  const ALLURI_MANDALS = [
-    { id: 'paderu', en: 'Paderu (HQ)', te: 'పాడేరు (ప్రధాన కేంద్రం)', pin: '531024' },
-    { id: 'araku', en: 'Araku Valley', te: 'అరకు లోయ', pin: '531151' },
-    { id: 'hukumpeta', en: 'Hukumpeta', te: 'హుకుంపేట', pin: '531077' },
-    { id: 'ananthagiri', en: 'Ananthagiri', te: 'అనంతగిరి', pin: '531145' },
-    { id: 'chintapalli', en: 'Chintapalli', te: 'చింతపల్లి', pin: '531111' },
-  ];
-
-  const getAlluriPin = (locality: string) => {
-    const name = locality.toLowerCase();
-    const match = ALLURI_MANDALS.find(m => name.includes(m.id) || name.includes(m.en.toLowerCase().split(' ')[0]));
-    return match ? match.pin : '531024';
-  };
-
-  const currentPin = countryId === 'india' && l1 === 'andhra-pradesh' ? getAlluriPin(currentNode?.name || '') : '531077';
+  const currentPin = isPseoActive ? (pSeoMandals[0]?.pin || '531024') : '531077';
 
   // AI Locality Insights logic
   const [insight, setInsight] = React.useState<string>('');
@@ -409,11 +403,11 @@ export default function CountryPage() {
                         "{insight}"
                       </p>
                       
-                      {l2 === 'alluri-sitharama-raju' && !l3 && (
+                      {isPseoActive && !l3 && (
                         <div className="space-y-3">
-                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{language === 'te' ? 'జిల్లా ఉప-విభాగాలు (మండలాలు)' : 'District Sub-divisions (Mandals)'}</p>
+                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{language === 'te' ? 'యూనిట్ ఉప-విభాగాలు (మండలాలు/ప్రాంతాలు)' : 'Regional Sub-divisions (Mandals/Localities)'}</p>
                           <div className="grid grid-cols-2 gap-2">
-                            {ALLURI_MANDALS.map((m) => (
+                            {pSeoMandals.map((m) => (
                               <div key={m.id} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between group hover:border-gold/30 transition-colors cursor-pointer">
                                 <div className="space-y-1">
                                   <p className="text-[10px] font-black text-slate-200 uppercase tracking-tight">{language === 'te' ? m.te : m.en}</p>
@@ -429,10 +423,10 @@ export default function CountryPage() {
                       )}
 
                       <div className="flex flex-wrap gap-2">
-                        {countryId === 'india' && (l1 === 'andhra-pradesh' || !l1) && (
+                        {isPseoActive && (
                           <>
                             <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-gold uppercase tracking-widest">
-                              <Target className="w-2.5 h-2.5" /> {t('mainHQ')}: {l2 === 'alluri-sitharama-raju' && !l3 ? 'Paderu' : (currentNode?.name || 'Paderu')}
+                              <Target className="w-2.5 h-2.5" /> {t('mainHQ')}: {language === 'te' ? frameworkDistrict.hqTe : frameworkDistrict.hqEn}
                             </span>
                             <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[8px] font-black text-slate-400 uppercase tracking-widest">
                               <Hash className="w-2.5 h-2.5" /> PIN: {currentPin}
@@ -452,9 +446,9 @@ export default function CountryPage() {
                           : 'AI indexing active for this regional node. Gathering administrative and logistical context...'}
                       </p>
 
-                      {l2 === 'alluri-sitharama-raju' && !l3 && (
+                      {isPseoActive && !l3 && (
                         <div className="grid grid-cols-2 gap-2 mt-4">
-                          {ALLURI_MANDALS.map((m) => (
+                          {pSeoMandals.map((m) => (
                             <div key={m.id} className="p-3 rounded-xl bg-slate-900/40 border border-slate-800/40 flex items-center justify-between">
                               <div className="space-y-1">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-tight">{language === 'te' ? m.te : m.en}</p>
@@ -677,7 +671,7 @@ export default function CountryPage() {
       </div>
 
       {/* Phase-3: Visual Mini-Map & Distance Calculator Injected beneath Grid */}
-      {l2 === 'alluri-sitharama-raju' && !l3 && (
+      {isPseoActive && !l3 && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -685,7 +679,8 @@ export default function CountryPage() {
         >
           {/* Visual Mini-Map Component */}
           <div className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden h-[400px] relative group shadow-2xl">
-            <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/82.5,18.5,8,0/800x600?access_token=pk.eyJ1IjoiYm90LWNvZGVyIiwiYSI6ImNreG96Ym8xejAwNjIyd3BneHR4eHR4eHR4In0=')] opacity-40 grayscale contrast-125 group-hover:scale-105 transition-transform duration-[10s]" />
+            <div className={`absolute inset-0 opacity-40 grayscale contrast-125 group-hover:scale-105 transition-transform duration-[10s]`}
+                 style={{ backgroundImage: `url(https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${pSeoCoords.lng},${pSeoCoords.lat},10,0/800x600?access_token=pk.eyJ1IjoiYm90LWNvZGVyIiwiYSI6ImNreG96Ym8xejAwNjIyd3BneHR4eHR4eHR4In0=)` }} />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
             
             {/* Radar Rings Overlay */}
@@ -713,10 +708,10 @@ export default function CountryPage() {
             <div className="absolute bottom-6 left-6 right-6">
               <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 backdrop-blur-xl space-y-1">
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{language === 'te' ? 'ప్రాంతీయ ఫోకస్' : 'Regional Focus'}</p>
-                <p className="text-lg font-black text-white italic uppercase tracking-tighter">{currentNode?.name || 'Alluri District'} Sector-01</p>
+                <p className="text-lg font-black text-white italic uppercase tracking-tighter">{currentNode?.name || frameworkDistrict ? (language === 'te' ? frameworkDistrict.nameTe : frameworkDistrict.nameEn) : country.name} Sector-01</p>
                 <div className="flex gap-2 pt-2">
                   <span className="text-[8px] font-bold text-gold px-2 py-0.5 bg-gold/10 rounded border border-gold/20">GIS INDEXED</span>
-                  <span className="text-[8px] font-bold text-slate-500 px-2 py-0.5 bg-slate-900 rounded border border-slate-800 uppercase italic">Coordinates: 18.50° N, 82.50° E</span>
+                  <span className="text-[8px] font-bold text-slate-500 px-2 py-0.5 bg-slate-900 rounded border border-slate-800 uppercase italic">Coordinates: {pSeoCoords.lat}° N, {pSeoCoords.lng}° E</span>
                 </div>
               </div>
             </div>

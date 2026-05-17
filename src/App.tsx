@@ -20,7 +20,6 @@ export default function App() {
               <Route path="/:countryId/:l1" element={<CountryPage />} />
               <Route path="/:countryId/:l1/:l2" element={<CountryPage />} />
               <Route path="/:countryId/:l1/:l2/:l3" element={<CountryPage />} />
-              <Route path="/ai-tools" element={<AITools />} />
             </Routes>
           </Layout>
         </BrowserRouter>
