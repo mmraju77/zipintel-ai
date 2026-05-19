@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Target } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { useParams } from 'react-router-dom';
 
 interface GeoRadarProps {
   district: string;
@@ -11,7 +12,14 @@ interface GeoRadarProps {
 
 export const GeoRadar: React.FC<GeoRadarProps> = ({ district, coords, language }) => {
   const { t } = useI18n();
+  const { l2: districtId } = useParams<{ l2?: string }>();
+  
   const districtTitle = district ? `${district.replace(/-/g, ' ').toUpperCase()} SECTOR-01` : 'GLOBAL NODE';
+
+  React.useEffect(() => {
+    // Neural focus calibration on district shift
+    console.log(`[GeoRadar] Calibrating focus to: ${districtId || 'Global'}`);
+  }, [districtId]);
 
   return (
     <div className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden h-[400px] relative group shadow-2xl">

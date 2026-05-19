@@ -270,7 +270,7 @@ export default function CountryPage() {
     };
 
     fetchInsight();
-  }, [currentNode?.id, country.name]);
+  }, [currentNode?.id, country.name, districtId, localityId]);
 
   // Dynamic Title Construction
   const locationLabel = [node3?.name, node2?.name, node1?.name, country.name]
@@ -690,12 +690,14 @@ export default function CountryPage() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4"
         >
           <GeoRadar 
+            key={`${districtId}-${localityId}`}
             district={districtId || ''} 
             coords={pSeoCoords} 
             language={language} 
           />
 
           <DistanceCalculator
+            key={`${districtId}-${localityId}`}
             district={districtId || ''}
             language={language}
             distSource={distSource}

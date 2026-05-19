@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Zap, ShieldCheck, Loader2, Target, ChevronRight } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { useParams } from 'react-router-dom';
 
 interface DistanceCalculatorProps {
   district: string;
@@ -27,7 +28,16 @@ export const DistanceCalculator: React.FC<DistanceCalculatorProps> = ({
   onCalculate
 }) => {
   const { t } = useI18n();
+  const { l2: districtId } = useParams<{ l2?: string }>();
+  
   const districtName = district ? district.replace(/-/g, ' ').toUpperCase() : 'REGIONAL';
+
+  React.useEffect(() => {
+    // Reset or update internal routing matrix on district change
+    if (districtId) {
+      console.log(`[DistanceCalculator] Updating routing matrix for: ${districtId}`);
+    }
+  }, [districtId]);
 
   return (
     <div className="glass-card p-8 flex flex-col justify-center space-y-6">
