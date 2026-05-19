@@ -89,11 +89,56 @@ export const INFRASTRUCTURE_METADATA: Record<string, InfrastructureStats> = {
       primaryIFSC: "SBIN0002345",
       atms: 4500
     }
+  },
+  "california": {
+    internet: {
+      providers: ["AT&T Fiber", "Xfinity", "Starlink", "Google Fiber"],
+      avgSpeed: "1.2 Gbps",
+      coverage: "High"
+    },
+    logistics: {
+      hubs: ["LAX Logistics Central", "Oakland Port Hub"],
+      primaryPartner: "FedEx",
+      warehouses: 890
+    },
+    ecommerce: {
+      status: "Instant",
+      providers: ["Amazon Prime", "DoorDash", "Instacart"],
+      avgDeliveryTime: "Under 1 Hour"
+    },
+    financial: {
+      bankBranches: 1200,
+      routingPrefix: "121000",
+      atms: 15400
+    }
+  },
+  "london": {
+    internet: {
+      providers: ["BT Full Fibre", "Virgin Media", "Sky Broadband"],
+      avgSpeed: "900 Mbps",
+      coverage: "High"
+    },
+    logistics: {
+      hubs: ["Heathrow Distribution", "London Gateway"],
+      primaryPartner: "Royal Mail",
+      warehouses: 450
+    },
+    ecommerce: {
+      status: "Instant",
+      providers: ["Deliveroo", "Ocado", "Amazon UK"],
+      avgDeliveryTime: "35 Mins"
+    },
+    financial: {
+      bankBranches: 620,
+      routingPrefix: "20-00-00 (Sort)",
+      atms: 8200
+    }
   }
 };
 
 export const getInfrastructureData = (districtId: string): InfrastructureStats => {
-  return INFRASTRUCTURE_METADATA[districtId] || {
+  const key = districtId.toLowerCase();
+  return INFRASTRUCTURE_METADATA[key] || {
     internet: { providers: ["Local ISP"], avgSpeed: "50 Mbps", coverage: "Low" },
     logistics: { hubs: ["Primary Post Office"], primaryPartner: "Postal Service", warehouses: 1 },
     ecommerce: { status: "Available", providers: ["Local Express"], avgDeliveryTime: "7+ Days" },

@@ -118,7 +118,9 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
         <div className="space-y-4">
           <div>
             <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('regionalFinancialIdentifiers')}</p>
-            <h3 className="text-xl font-black text-white italic tracking-tighter">{stats.financial.primaryIFSC || 'NODE ACTIVE'}</h3>
+            <h3 className="text-xl font-black text-white italic tracking-tighter uppercase">
+              {stats.financial.primaryIFSC || stats.financial.routingPrefix || 'NODE ACTIVE'}
+            </h3>
           </div>
           <div className="p-3 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 space-y-2">
             <div className="flex justify-between items-center">

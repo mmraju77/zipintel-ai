@@ -92,5 +92,43 @@ export const POSTAL_FRAMEWORK: Record<string, StateData> = {
         ]
       }
     }
+  },
+  "california": {
+    id: "california",
+    nameEn: "California",
+    nameTe: "కాలిఫోర్నియా",
+    districts: {
+      "los-angeles": {
+        id: "los-angeles",
+        nameEn: "Los Angeles",
+        nameTe: "లాస్ ఏంజిల్స్",
+        hqEn: "Downtown LA",
+        hqTe: "డౌన్ టౌన్ LA",
+        coords: { lat: 34.05, lng: -118.24 },
+        mandals: [
+          { id: '90001', en: 'South LA (90001)', te: 'సౌత్ LA (90001)', pin: '90001' },
+          { id: '90012', en: 'Civic Center (90012)', te: 'సివిక్ సెంటర్ (90012)', pin: '90012' },
+        ]
+      }
+    }
+  },
+  "london": {
+    id: "london",
+    nameEn: "London",
+    nameTe: "లండన్",
+    districts: {
+      "central-london": {
+        id: "central-london",
+        nameEn: "Central London",
+        nameTe: "సెంట్రల్ లండన్",
+        hqEn: "Westminster",
+        hqTe: "వెస్ట్ మినిస్టర్",
+        coords: { lat: 51.50, lng: -0.12 },
+        mandals: [
+          { id: 'sw1a', en: 'Westminster (SW1A)', te: 'వెస్ట్ మినిస్టర్ (SW1A)', pin: 'SW1A 1AA' },
+          { id: 'ec1a', en: 'City of London (EC1A)', te: 'సిటీ ఆఫ్ లండన్ (EC1A)', pin: 'EC1A 1BB' },
+        ]
+      }
+    }
   }
 };
