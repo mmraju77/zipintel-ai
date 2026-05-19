@@ -715,7 +715,7 @@ export default function CountryPage() {
       )}
 
       {isPseoActive && !localityId && (
-        <InfrastructureInsights districtId={districtId || ''} language={language} />
+        <InfrastructureInsights key={`${districtId}-${localityId}`} districtId={districtId || ''} language={language} />
       )}
 
       {/* Contextual Stats */}
