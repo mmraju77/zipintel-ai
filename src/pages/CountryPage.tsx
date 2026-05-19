@@ -9,6 +9,7 @@ import { ChevronRight, MapPin, Database, Zap, ShieldCheck, ArrowLeft, Hash, Spar
 import { useI18n } from '../lib/i18n';
 import { GeoRadar } from '../components/GeoRadar';
 import { DistanceCalculator } from '../components/DistanceCalculator';
+import { InfrastructureInsights } from '../components/InfrastructureInsights';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
@@ -711,6 +712,10 @@ export default function CountryPage() {
             onCalculate={handleCalculateDistance}
           />
         </motion.div>
+      )}
+
+      {isPseoActive && !localityId && (
+        <InfrastructureInsights districtId={districtId || ''} language={language} />
       )}
 
       {/* Contextual Stats */}

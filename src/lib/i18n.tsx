@@ -83,6 +83,20 @@ const translations: Translations = {
   downloadReport: { en: 'Download Verified PDF Report', te: 'ధృవీకరించబడిన PDF రిపోర్ట్ డౌన్‌లోడ్ చేయండి' },
   standardizeAddress: { en: 'Standardize Address', te: 'చిరునామాను ప్రమాణీకరించండి' },
   getAiInsight: { en: 'Get AI Insight', te: 'AI అంతర్దృష్టిని పొందండి' },
+
+  // Infrastructure Insights
+  networkInternetStatus: { en: 'Network & Internet Status', te: 'నెట్‌వర్క్ & ఇంటర్నెట్ స్థితి' },
+  logisticsCourierHubs: { en: 'Logistics & Courier Hubs', te: 'లాజిస్టిక్స్ & కొరియర్ హబ్‌లు' },
+  ecommerceDeliveryCheck: { en: 'E-Commerce Delivery Check', te: 'ఇ-కామర్స్ డెలివరీ చెక్' },
+  regionalFinancialIdentifiers: { en: 'Regional Financial Identifiers', te: 'ప్రాంతీయ ఆర్థిక ఐడెంటిఫైయర్లు' },
+  activeProviders: { en: 'Active Providers', te: 'యాక్టివ్ ప్రొవైడర్లు' },
+  avgSpeed: { en: 'Avg Speed', te: 'సగటు వేగం' },
+  coverageLevel: { en: 'Coverage Level', te: 'కవరేజ్ స్థాయి' },
+  primaryPartner: { en: 'Primary Partner', te: 'ప్రధాన భాగస్వామి' },
+  deliveryStatus: { en: 'Delivery Status', te: 'డెలివరీ స్థితి' },
+  avgTime: { en: 'Avg Time', te: 'సగటు సమయం' },
+  financeId: { en: 'Financial ID (IFSC/Routing)', te: 'ఫైనాన్షియల్ ID (IFSC/రూటింగ్)' },
+  branchCount: { en: 'Branch Count', te: 'బ్రాంచ్‌ల సంఖ్య' },
 };
 
 interface I18nContextType {
