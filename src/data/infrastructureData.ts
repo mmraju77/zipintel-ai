@@ -90,7 +90,7 @@ export const INFRASTRUCTURE_METADATA: Record<string, InfrastructureStats> = {
       atms: 4500
     }
   },
-  "california": {
+  "los-angeles": {
     internet: {
       providers: ["AT&T Fiber", "Xfinity", "Starlink", "Google Fiber"],
       avgSpeed: "1.2 Gbps",
@@ -112,7 +112,7 @@ export const INFRASTRUCTURE_METADATA: Record<string, InfrastructureStats> = {
       atms: 15400
     }
   },
-  "london": {
+  "greater-london": {
     internet: {
       providers: ["BT Full Fibre", "Virgin Media", "Sky Broadband"],
       avgSpeed: "900 Mbps",
@@ -132,6 +132,72 @@ export const INFRASTRUCTURE_METADATA: Record<string, InfrastructureStats> = {
       bankBranches: 620,
       routingPrefix: "20-00-00 (Sort)",
       atms: 8200
+    }
+  },
+  "oberbayern": {
+    internet: {
+      providers: ["Deutsche Telekom", "Vodafone", "O2", "1&1"],
+      avgSpeed: "500 Mbps",
+      coverage: "High"
+    },
+    logistics: {
+      hubs: ["Berlin Brandenburg Airport Area", "Pankow Logistics Park"],
+      primaryPartner: "DHL Express",
+      warehouses: 210
+    },
+    ecommerce: {
+      status: "Instant",
+      providers: ["Gorillas", "Flink", "Amazon.de"],
+      avgDeliveryTime: "45 Mins"
+    },
+    financial: {
+      bankBranches: 380,
+      routingPrefix: "BLZ: 100 000 00",
+      atms: 3200
+    }
+  },
+  "sector-3": {
+    internet: {
+      providers: ["Etisalat", "Du", "Starlink"],
+      avgSpeed: "800 Mbps",
+      coverage: "High"
+    },
+    logistics: {
+      hubs: ["Jebel Ali Free Zone", "Dubai South (DWC)"],
+      primaryPartner: "Aramex",
+      warehouses: 560
+    },
+    ecommerce: {
+      status: "Instant",
+      providers: ["Noon", "Amazon.ae", "Careem Quik"],
+      avgDeliveryTime: "Under 30 Mins"
+    },
+    financial: {
+      bankBranches: 290,
+      routingPrefix: "EIBAN Active",
+      atms: 1800
+    }
+  },
+  "sydney": {
+    internet: {
+      providers: ["NBN Co", "Telstra", "Optus", "TPG"],
+      avgSpeed: "100 Mbps",
+      coverage: "Medium"
+    },
+    logistics: {
+      hubs: ["Western Sydney Aerotropolis", "Botany Bay Port"],
+      primaryPartner: "Australia Post",
+      warehouses: 180
+    },
+    ecommerce: {
+      status: "Available",
+      providers: ["Milkrun", "DoorDash", "Amazon AU"],
+      avgDeliveryTime: "1-2 Hours"
+    },
+    financial: {
+      bankBranches: 340,
+      routingPrefix: "BSB: 062-000",
+      atms: 2400
     }
   }
 };

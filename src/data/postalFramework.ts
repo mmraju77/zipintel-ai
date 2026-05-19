@@ -112,21 +112,59 @@ export const POSTAL_FRAMEWORK: Record<string, StateData> = {
       }
     }
   },
-  "london": {
-    id: "london",
-    nameEn: "London",
-    nameTe: "లండన్",
+  "england": {
+    id: "england",
+    nameEn: "England",
+    nameTe: "ఇంగ్లాండ్",
     districts: {
-      "central-london": {
-        id: "central-london",
-        nameEn: "Central London",
-        nameTe: "సెంట్రల్ లండన్",
-        hqEn: "Westminster",
-        hqTe: "వెస్ట్ మినిస్టర్",
+      "greater-london": {
+        id: "greater-london",
+        nameEn: "Greater London",
+        nameTe: "గ్రేటర్ లండన్",
+        hqEn: "London",
+        hqTe: "లండన్",
         coords: { lat: 51.50, lng: -0.12 },
         mandals: [
           { id: 'sw1a', en: 'Westminster (SW1A)', te: 'వెస్ట్ మినిస్టర్ (SW1A)', pin: 'SW1A 1AA' },
           { id: 'ec1a', en: 'City of London (EC1A)', te: 'సిటీ ఆఫ్ లండన్ (EC1A)', pin: 'EC1A 1BB' },
+        ]
+      }
+    }
+  },
+  "bayern": {
+    id: "bayern",
+    nameEn: "Bayern",
+    nameTe: "బవేరియా",
+    districts: {
+      "oberbayern": {
+        id: "oberbayern",
+        nameEn: "Oberbayern",
+        nameTe: "ఓబెర్బేయర్న్",
+        hqEn: "Munich",
+        hqTe: "మ్యూనిచ్",
+        coords: { lat: 48.13, lng: 11.58 },
+        mandals: [
+          { id: '80331', en: 'Altstadt (80331)', te: 'అల్ట్‌స్టాడ్ట్ (80331)', pin: '80331' },
+          { id: '80333', en: 'Maxvorstadt (80333)', te: 'మాక్స్‌వోర్‌స్టాడ్ట్ (80333)', pin: '80333' },
+        ]
+      }
+    }
+  },
+  "dubai": {
+    id: "dubai",
+    nameEn: "Dubai",
+    nameTe: "దుబాయ్",
+    districts: {
+      "sector-3": {
+        id: "sector-3",
+        nameEn: "Sector 3",
+        nameTe: "సెక్షన్ 3",
+        hqEn: "Al Barsha",
+        hqTe: "అల్ బర్షా",
+        coords: { lat: 25.10, lng: 55.19 },
+        mandals: [
+          { id: 'dxb-001', en: 'Al Barsha 1', te: 'అల్ బర్షా 1', pin: 'DXB-001' },
+          { id: 'dxb-002', en: 'Jumeirah', te: 'జుమేరా', pin: 'DXB-002' },
         ]
       }
     }
