@@ -10,6 +10,7 @@ import { useI18n } from '../lib/i18n';
 import { GeoRadar } from '../components/GeoRadar';
 import { DistanceCalculator } from '../components/DistanceCalculator';
 import { InfrastructureInsights } from '../components/InfrastructureInsights';
+import { AILocalGuide } from '../components/AILocalGuide';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
@@ -715,7 +716,10 @@ export default function CountryPage() {
       )}
 
       {isPseoActive && !localityId && (
-        <InfrastructureInsights key={`${districtId}-${localityId}`} districtId={districtId || ''} language={language} />
+        <>
+          <InfrastructureInsights key={`infra-${districtId}-${localityId}`} districtId={districtId || ''} language={language} />
+          <AILocalGuide key={`ai-guide-${districtId}-${localityId}`} districtId={districtId || ''} countryId={country.id} />
+        </>
       )}
 
       {/* Contextual Stats */}
