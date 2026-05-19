@@ -127,18 +127,20 @@ export default function CountryPage() {
             // If the parent name looks like a pincode or is a village search
             const pincodeMatch = currentNode?.name.match(/\d{6}/);
             const query = pincodeMatch ? pincodeMatch[0] : currentNode?.name;
-            const res = await fetch(`/api/postal/live-india/${query}`);
-            const data = await res.json();
-            
-            if (data && data[0] && data[0].Status === 'Success') {
-              const records = data[0].PostOffice.map((po: any) => ({
-                id: po.Name.toLowerCase().replace(/ /g, '-'),
-                name: po.Name,
-                type: 'Post Office',
-                postalCode: po.Pincode
-              }));
-              setFetchedItems(records);
-              return;
+            if (query) {
+              const res = await fetch(`/api/postal/live-india/${query}`);
+              const data = await res.json();
+              
+              if (data && data[0] && data[0].Status === 'Success') {
+                const records = data[0].PostOffice.map((po: any) => ({
+                  id: po.Name.toLowerCase().replace(/ /g, '-'),
+                  name: po.Name,
+                  type: 'Post Office',
+                  postalCode: po.Pincode
+                }));
+                setFetchedItems(records);
+                return;
+              }
             }
           }
 
@@ -691,7 +693,7 @@ export default function CountryPage() {
         >
           <GeoRadar 
             key={`${districtId}-${localityId}`}
-            district={districtId || ''} 
+            district={districtName || districtId || ''} 
             coords={pSeoCoords} 
             language={language} 
           />
