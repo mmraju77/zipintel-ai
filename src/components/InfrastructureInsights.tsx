@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Wifi, Truck, ShoppingBag, Landmark, Shield } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import { useI18n } from '../lib/i18n';
 import { getInfrastructureData } from '../data/infrastructureData';
 

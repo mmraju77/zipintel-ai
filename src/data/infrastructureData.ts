@@ -24,6 +24,14 @@ export const GLOBAL_POSTAL_MAP: Record<string, PostalInfrastructure> = {
     deliveryCheck: { status: "Instant", eta: "15 Mins", platforms: "Zepto, Instamart, Swiggy Genie" },
     financeIdentifiers: { label: "IFSC Code", code: "SBIN0002345" }
   },
+  "delhi": {
+    regionKey: "delhi",
+    countryCode: "IN",
+    internetStatus: { provider: "Jio Fiber & Tata Play", avgSpeed: "1 Gbps", type: "FTTH" },
+    logisticsHubs: { mainPartner: "BlueDart & Delhivery", nearestHub: "IGIA Cargo Terminal", coverage: "National Capital Hub" },
+    deliveryCheck: { status: "Instant", eta: "10-20 Mins", platforms: "Blinkit, Zepto, Zomato" },
+    financeIdentifiers: { label: "IFSC Code", code: "SBIN0000691" }
+  },
   "alluri-sitharama-raju": {
     regionKey: "alluri-sitharama-raju",
     countryCode: "IN",
@@ -127,6 +135,94 @@ export const GLOBAL_POSTAL_MAP: Record<string, PostalInfrastructure> = {
     logisticsHubs: { mainPartner: "PostNL & DHL NL", nearestHub: "Schiphol Logistics Centroid", coverage: "Benelux Overnight Premium" },
     deliveryCheck: { status: "Instant", eta: "25 Mins", platforms: "Thuisbezorgd.nl, UberEats, Flink" },
     financeIdentifiers: { label: "BIC/IBAN", code: "RABONL2U" }
+  },
+  "rotterdam": {
+    regionKey: "rotterdam",
+    countryCode: "NL",
+    internetStatus: { provider: "Ziggo & T-Mobile", avgSpeed: "1 Gbps", type: "Fiber-to-the-Home" },
+    logisticsHubs: { mainPartner: "PostNL", nearestHub: "Maasvlakte Port Hub", coverage: "Global Maritime Logistics" },
+    deliveryCheck: { status: "Instant", eta: "30 Mins", platforms: "UberEats, Thuisbezorgd" },
+    financeIdentifiers: { label: "BIC/IBAN", code: "INGBNL2A" }
+  },
+  "new-york": {
+    regionKey: "new-york",
+    countryCode: "US",
+    internetStatus: { provider: "Verizon Fios & Spectrum", avgSpeed: "1 Gbps", type: "Fiber-Optic" },
+    logisticsHubs: { mainPartner: "UPS & USPS", nearestHub: "JFK Cargo Terminal", coverage: "US East Coast Hub" },
+    deliveryCheck: { status: "Instant", eta: "15-30 Mins", platforms: "Amazon Fresh, DoorDash, UberEats" },
+    financeIdentifiers: { label: "Routing Number", code: "021000021" }
+  },
+  "texas": {
+    regionKey: "texas",
+    countryCode: "US",
+    internetStatus: { provider: "AT&T & Google Fiber", avgSpeed: "1 Gbps", type: "Fiber Infrastructure" },
+    logisticsHubs: { mainPartner: "FedEx", nearestHub: "Fort Worth Alliance Hub", coverage: "Central US Logistics" },
+    deliveryCheck: { status: "Available", eta: "1-2 Hours", platforms: "Favor, DoorDash, Amazon" },
+    financeIdentifiers: { label: "Routing Number", code: "111000025" }
+  },
+  "manchester": {
+    regionKey: "manchester",
+    countryCode: "GB",
+    internetStatus: { provider: "Virgin Media & Sky", avgSpeed: "500 Mbps", type: "Hybrid Fiber Coaxial" },
+    logisticsHubs: { mainPartner: "Hermes & Royal Mail", nearestHub: "Trafford Park Distribution", coverage: "UK North Priority" },
+    deliveryCheck: { status: "Instant", eta: "30 Mins", platforms: "Deliveroo, Just Eat" },
+    financeIdentifiers: { label: "Sort Code", code: "01-02-03" }
+  },
+  "vancouver": {
+    regionKey: "vancouver",
+    countryCode: "CA",
+    internetStatus: { provider: "Telus & Shaw", avgSpeed: "1 Gbps", type: "PureFiber" },
+    logisticsHubs: { mainPartner: "Canada Post", nearestHub: "Richmond Sorting Facility", coverage: "Pacific Gateway" },
+    deliveryCheck: { status: "Instant", eta: "40 Mins", platforms: "UberEats, SkipTheDishes" },
+    financeIdentifiers: { label: "Transit Number", code: "00010-001" }
+  },
+  "melbourne": {
+    regionKey: "melbourne",
+    countryCode: "AU",
+    internetStatus: { provider: "Telstra & Optus", avgSpeed: "100 Mbps", type: "NBN HFC" },
+    logisticsHubs: { mainPartner: "Australia Post", nearestHub: "Tullamarine Logistics Park", coverage: "SE Australia Hub" },
+    deliveryCheck: { status: "Instant", eta: "45 Mins", platforms: "DoorDash, Menulog" },
+    financeIdentifiers: { label: "BSB Number", code: "082-001" }
+  },
+  "berlin": {
+    regionKey: "berlin",
+    countryCode: "DE",
+    internetStatus: { provider: "Deutsche Telekom & Vodafone", avgSpeed: "1 Gbps", type: "DOCSIS 3.1" },
+    logisticsHubs: { mainPartner: "DHL & UPS", nearestHub: "Ludwigsfelde Parcel Center", coverage: "Central EU Hub" },
+    deliveryCheck: { status: "Instant", eta: "30 Mins", platforms: "Wolt, Lieferando" },
+    financeIdentifiers: { label: "BIC/IBAN", code: "DEBADEBBXXX" }
+  },
+  "geneva": {
+    regionKey: "geneva",
+    countryCode: "CH",
+    internetStatus: { provider: "Swisscom & Salt", avgSpeed: "10 Gbps", type: "Fiber" },
+    logisticsHubs: { mainPartner: "Swiss Post", nearestHub: "Plan-les-Ouates Center", coverage: "Alpine Logistics" },
+    deliveryCheck: { status: "Available", eta: "1 Hour", platforms: "UberEats, Smood" },
+    financeIdentifiers: { label: "Clearing Number", code: "024" }
+  },
+  "bergen": {
+    regionKey: "bergen",
+    countryCode: "NO",
+    internetStatus: { provider: "Telenor & Lyse", avgSpeed: "500 Mbps", type: "Fiber" },
+    logisticsHubs: { mainPartner: "Posten", nearestHub: "Nygårdstangen Terminal", coverage: "Fjord Logistics" },
+    deliveryCheck: { status: "Available", eta: "45 Mins", platforms: "Foodora" },
+    financeIdentifiers: { label: "Bankgiro", code: "8001.01" }
+  },
+  "gothenburg": {
+    regionKey: "gothenburg",
+    countryCode: "SE",
+    internetStatus: { provider: "Tele2 & Telenor", avgSpeed: "1 Gbps", type: "Fiber" },
+    logisticsHubs: { mainPartner: "PostNord", nearestHub: "Landvetter Logistics", coverage: "West Sweden Hub" },
+    deliveryCheck: { status: "Instant", eta: "30 Mins", platforms: "Foodora, Wolt" },
+    financeIdentifiers: { label: "Clearingnummer", code: "6123-4" }
+  },
+  "aarhus": {
+    regionKey: "aarhus",
+    countryCode: "DK",
+    internetStatus: { provider: "Stofa & Nuuday", avgSpeed: "1 Gbps", type: "Fiber/Coax" },
+    logisticsHubs: { mainPartner: "PostNord & Bring", nearestHub: "Logistikparken Aarhus", coverage: "Jutland Hub" },
+    deliveryCheck: { status: "Instant", eta: "35 Mins", platforms: "Wolt" },
+    financeIdentifiers: { label: "Reg. nr.", code: "4001" }
   },
   "sector-3": {
     regionKey: "sector-3",

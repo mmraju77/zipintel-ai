@@ -717,8 +717,8 @@ export default function CountryPage() {
 
       {isPseoActive && !localityId && (
         <>
-          <InfrastructureInsights key={`infra-${districtId}-${localityId}`} districtId={districtId || ''} language={language} />
-          <AILocalGuide key={`ai-guide-${districtId}-${localityId}`} districtId={districtId || ''} countryId={country.id} />
+          <InfrastructureInsights key={`infra-${districtId}`} districtId={districtId || ''} language={language} />
+          <AILocalGuide key={`ai-guide-${districtId}`} districtId={districtId || ''} countryId={country.id} />
         </>
       )}
 
