@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Wifi, Truck, ShoppingBag, Landmark, Shield } from 'lucide-react';
+import { Wifi, Truck, ShoppingBag, Landmark, Shield, CreditCard } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useI18n } from '../lib/i18n';
 import { getInfrastructureData } from '../data/infrastructureData';
@@ -34,7 +34,7 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
       variants={container}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-8"
     >
       {/* Card 1: Network & Internet */}
       <motion.div variants={item} className="p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-gold/30 transition-all group">
@@ -125,6 +125,52 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
             <div className="flex items-center gap-1.5">
               <Shield className="w-2.5 h-2.5 text-indigo-400/50" />
               <span className="text-[7px] font-black text-slate-600 uppercase tracking-widest">Regulatory Compliant</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Card 5: Financial Routing Infrastructure */}
+      <motion.div variants={item} className="p-6 rounded-3xl bg-[#0f172a] border border-slate-800 hover:border-[#deff9a]/40 transition-all group relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#deff9a]/5 blur-3xl rounded-full -mr-16 -mt-16" />
+        <div className="flex justify-between items-start mb-6 relative z-10">
+          <div className="w-10 h-10 rounded-xl bg-[#deff9a]/10 border border-[#deff9a]/20 flex items-center justify-center">
+            <CreditCard className="w-5 h-5 text-[#deff9a]" />
+          </div>
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#deff9a]/10 border border-[#deff9a]/20">
+             <div className="w-1 h-1 rounded-full bg-[#deff9a] animate-pulse" />
+             <span className="text-[8px] font-black text-[#deff9a] uppercase tracking-widest">Global Matrix</span>
+          </div>
+        </div>
+        <div className="space-y-4 relative z-10">
+          <div>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">FINANCIAL ROUTING INFRASTRUCTURE</p>
+            <h3 className="text-sm font-black text-white tracking-widest uppercase">
+              {stats.bankingDetails?.bankName || 'Global Routing Node'}
+            </h3>
+            <p className="text-[10px] text-[#deff9a] font-bold uppercase tracking-tighter mt-0.5">
+               {stats.bankingDetails?.branch || 'Standard Regional Branch'}
+            </p>
+          </div>
+          
+          <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+            <div className="flex justify-between items-center bg-[#deff9a]/5 p-2 rounded-lg border border-[#deff9a]/10">
+               <div>
+                  <p className="text-[7px] font-bold text-slate-500 uppercase">{stats.bankingDetails?.routingLabel || 'Routing'}</p>
+                  <p className="text-[10px] font-black text-white tracking-widest">{stats.bankingDetails?.routingCode || 'N/A'}</p>
+               </div>
+               <div className="text-right">
+                  <p className="text-[7px] font-bold text-slate-500 uppercase">Clearance</p>
+                  <p className="text-[8px] font-black text-[#deff9a] uppercase">Synchronized</p>
+               </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-2">
+                 <div className="w-4 h-4 rounded-full bg-[#deff9a]/20 border border-[#deff9a]/40" />
+                 <div className="w-4 h-4 rounded-full bg-slate-800 border border-slate-700" />
+              </div>
+              <span className="text-[7px] font-black text-slate-500 uppercase tracking-widest">ISO 20022 Compliant</span>
             </div>
           </div>
         </div>
