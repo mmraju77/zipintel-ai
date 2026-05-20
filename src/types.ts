@@ -74,4 +74,74 @@ export const COUNTRIES: Country[] = [
     hierarchy: ['Emirate', 'Sector', 'Community', 'Postal Code'],
     description: 'Explore Emirates and sectors'
   },
+  {
+    id: 'switzerland',
+    name: 'Switzerland',
+    path: '/switzerland',
+    hierarchy: ['Canton', 'District', 'Municipality', 'Postal Code'],
+    description: 'DISCOVER CANTONS AND CLEARING CODES'
+  },
+  {
+    id: 'norway',
+    name: 'Norway',
+    path: '/norway',
+    hierarchy: ['County', 'Municipality', 'District', 'Postal Code'],
+    description: 'EXPLORE POSTEN NORGE ZIP CODES'
+  },
+  {
+    id: 'sweden',
+    name: 'Sweden',
+    path: '/sweden',
+    hierarchy: ['County', 'Municipality', 'Area', 'Postal Code'],
+    description: 'LOOKUP POSTNORD DISTRIBUTION NODES'
+  },
+  {
+    id: 'denmark',
+    name: 'Denmark',
+    path: '/denmark',
+    hierarchy: ['Region', 'Municipality', 'District', 'Postal Code'],
+    description: 'SEARCH REGIONAL POSTAL SECTORS'
+  },
+  {
+    id: 'netherlands',
+    name: 'Netherlands',
+    path: '/netherlands',
+    hierarchy: ['Province', 'Municipality', 'City', 'Postal Code'],
+    description: 'MAPPING KPN & POSTNL INFRASTRUCTURE'
+  },
+  {
+    id: 'singapore',
+    name: 'Singapore',
+    path: '/singapore',
+    hierarchy: ['Region', 'District', 'Sector', 'Postal Code'],
+    description: 'PREMIUM ASIA-PACIFIC FINTECH HUB'
+  },
+  {
+    id: 'new-zealand',
+    name: 'New Zealand',
+    path: '/new-zealand',
+    hierarchy: ['Region', 'District', 'Suburb', 'Postcode'],
+    description: 'TIER-1 EAST-OCEANIA POSTAL NODES'
+  },
+  {
+    id: 'ireland',
+    name: 'Ireland',
+    path: '/ireland',
+    hierarchy: ['County', 'City/Town', 'District', 'Eircode'],
+    description: 'EXPLORE TECH HUB EIRCODE METRICS'
+  },
+  {
+    id: 'austria',
+    name: 'Austria',
+    path: '/austria',
+    hierarchy: ['State', 'District', 'Municipality', 'PLZ'],
+    description: 'WEST-EUROPEAN HIGH-SPEED LOGISTICS'
+  },
+  {
+    id: 'luxembourg',
+    name: 'Luxembourg',
+    path: '/luxembourg',
+    hierarchy: ['Canton', 'Commune', 'Locality', 'Code Postal'],
+    description: 'MAXIMUM CPC FINANCIAL INFRASTRUCTURE'
+  },
 ];

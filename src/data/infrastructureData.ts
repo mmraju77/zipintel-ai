@@ -241,6 +241,46 @@ export const GLOBAL_POSTAL_MAP: Record<string, PostalInfrastructure> = {
     logisticsHubs: { mainPartner: "BlueDart & India Post", nearestHub: "Anakapalli Central Postal Depot", coverage: "District Priority Routing" },
     deliveryCheck: { status: "Available", eta: "2-3 Days", platforms: "Amazon, Flipkart, Swiggy Instamart" },
     financeIdentifiers: { label: "IFSC Code", code: "SBIN0000753" }
+  },
+  "singapore": {
+    regionKey: "singapore",
+    countryCode: "SG",
+    internetStatus: { provider: "Singtel Fiber & StarHub", avgSpeed: "2 Gbps", type: "Ultra-High Speed Fiber (FTTH)" },
+    logisticsHubs: { mainPartner: "SingPost & NinjaVan", nearestHub: "Changi Airfreight Centre", coverage: "Pano-Island Premium" },
+    deliveryCheck: { status: "Instant", eta: "15 Mins", platforms: "Grab, Foodpanda, Deliveroo, Shopee" },
+    financeIdentifiers: { label: "Postal Routing", code: "SG-048589" }
+  },
+  "auckland": {
+    regionKey: "auckland",
+    countryCode: "NZ",
+    internetStatus: { provider: "Spark NZ & Vodafone", avgSpeed: "500 Mbps", type: "Chorus Ultra-Fast Broadband" },
+    logisticsHubs: { mainPartner: "NZ Post & CourierPost", nearestHub: "Highbrook Distribution Hub", coverage: "NZ North Island Hub" },
+    deliveryCheck: { status: "Available", eta: "45 Mins", platforms: "UberEats, Menulog" },
+    financeIdentifiers: { label: "BSB / Routing", code: "01-02-03" }
+  },
+  "dublin": {
+    regionKey: "dublin",
+    countryCode: "IE",
+    internetStatus: { provider: "Eir Broadband & Virgin Media", avgSpeed: "1 Gbps", type: "Pure Fiber Optic" },
+    logisticsHubs: { mainPartner: "An Post & Nightline", nearestHub: "Dublin Parcel Hub", coverage: "EU West Corridor" },
+    deliveryCheck: { status: "Instant", eta: "30 Mins", platforms: "Deliveroo, Just Eat, UberEats" },
+    financeIdentifiers: { label: "Sort Code / Eircode Index", code: "D02 X285" }
+  },
+  "vienna": {
+    regionKey: "vienna",
+    countryCode: "AT",
+    internetStatus: { provider: "A1 Telekom & Magenta", avgSpeed: "500 Mbps", type: "Giga-HFC" },
+    logisticsHubs: { mainPartner: "Österreichische Post", nearestHub: "Inzersdorf Parcel Center", coverage: "Alpine Logistics Hub" },
+    deliveryCheck: { status: "Instant", eta: "35 Mins", platforms: "Lieferando, Mjam" },
+    financeIdentifiers: { label: "BIC/IBAN", code: "AT89 1200" }
+  },
+  "luxembourg-city": {
+    regionKey: "luxembourg-city",
+    countryCode: "LU",
+    internetStatus: { provider: "Post Luxembourg & Tango", avgSpeed: "1 Gbps", type: "FTTH" },
+    logisticsHubs: { mainPartner: "POST Logistics & CFL", nearestHub: "Bettembourg Logistics Park", coverage: "EU Central Logistics" },
+    deliveryCheck: { status: "Available", eta: "40 Mins", platforms: "Wolt, Wedely" },
+    financeIdentifiers: { label: "BIC/IBAN", code: "LU67 0001" }
   }
 };
 
