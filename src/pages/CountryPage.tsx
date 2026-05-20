@@ -33,7 +33,17 @@ export default function CountryPage() {
   }>();
 
   // Normalization for pSEO route if it matches /zip/:countryCode/:region/:zipCode
-  const actualCountryId = countryCode ? COUNTRIES.find(c => c.id.toLowerCase().includes(countryCode.toLowerCase()) || c.name.toLowerCase() === countryCode.toLowerCase())?.id || countryCode.toLowerCase() : countryParam;
+  const isoToId: Record<string, string> = {
+    'in': 'india', 'us': 'usa', 'gb': 'uk', 'ca': 'canada', 
+    'au': 'australia', 'de': 'germany', 'ae': 'uae', 'ch': 'switzerland',
+    'no': 'norway', 'se': 'sweden', 'dk': 'denmark', 'nl': 'netherlands',
+    'sg': 'singapore', 'nz': 'new-zealand', 'ie': 'ireland', 'at': 'austria',
+    'lu': 'luxembourg'
+  };
+
+  const actualCountryId = countryCode 
+    ? (isoToId[countryCode.toLowerCase()] || COUNTRIES.find(c => c.id.toLowerCase().includes(countryCode.toLowerCase()) || c.name.toLowerCase() === countryCode.toLowerCase())?.id || countryCode.toLowerCase()) 
+    : countryParam;
   const actualRegion = region || districtId;
   const actualZipCode = zipCode || localityId;
 

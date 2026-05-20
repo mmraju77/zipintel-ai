@@ -294,7 +294,8 @@ export const getInfrastructureData = (district: string, country?: string): Posta
   const resolvedCountryCode = country ? country.toUpperCase().substring(0, 2) : "INTL";
   
   // Algorithmic Interpolation for pSEO coverage
-  const isDigitalHub = resolvedCountryCode === 'SG' || resolvedCountryCode === 'US' || resolvedCountryCode === 'GB' || resolvedCountryCode === 'IN';
+  const digitalHubs = ['IN', 'US', 'GB', 'CA', 'AU', 'DE', 'AE', 'CH', 'NO', 'SE', 'DK', 'NL', 'SG', 'NZ', 'IE', 'AT', 'LU'];
+  const isDigitalHub = digitalHubs.includes(resolvedCountryCode);
   const prefix = district.charAt(0).toUpperCase() + district.slice(1);
   
   return {
