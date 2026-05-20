@@ -11,6 +11,7 @@ import { GeoRadar } from '../components/GeoRadar';
 import { DistanceCalculator } from '../components/DistanceCalculator';
 import { InfrastructureInsights } from '../components/InfrastructureInsights';
 import { AILocalGuide } from '../components/AILocalGuide';
+import { AffiliateWidgets } from '../components/AffiliateWidgets';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
@@ -760,6 +761,10 @@ export default function CountryPage() {
         <>
           <InfrastructureInsights key={`infra-${districtId}`} districtId={districtId || ''} language={language} />
           <AILocalGuide key={`ai-guide-${districtId}`} districtId={districtId || ''} countryId={country.id} />
+          <AffiliateWidgets 
+            countryCode={countryCode || (actualCountryId === 'india' ? 'IN' : actualCountryId === 'usa' ? 'US' : actualCountryId === 'uk' ? 'GB' : actualCountryId?.substring(0, 2).toUpperCase() || 'INTL')} 
+            region={actualRegion || country.name} 
+          />
         </>
       )}
 
