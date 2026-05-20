@@ -4,8 +4,8 @@
   --color-midnight: #020617;
   --color-slate-sidebar: #0f172a;
   --color-slate-card: #1e293b;
-  --color-gold: #d4af37;
-  --color-brass: #b8860b;
+  --color-gold: #deff9a;
+  --color-brass: #c9f57d;
   --color-accent: var(--color-gold);
   
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -25,8 +25,50 @@
   }
 }
 
-.glass-card {
-  @apply bg-slate-800/40 backdrop-blur-md border border-slate-700/50 rounded-2xl hover:border-gold/30 transition-all duration-300;
+@layer components {
+  .glass-card {
+    @apply bg-slate-800/40 backdrop-blur-md border border-slate-700/50 rounded-2xl hover:border-gold/30 transition-all duration-300;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .glass-card, div, section, article {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: black !important;
+    backdrop-filter: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  p, h1, h2, h3, span, li, tr, td, th {
+    color: black !important;
+  }
+
+  .text-gold, .text-\[\#deff9a\], .text-emerald-400 {
+    color: black !important;
+    font-weight: bold !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}
+
+.print-only {
+  display: none;
 }
 
 .gold-gradient-text {

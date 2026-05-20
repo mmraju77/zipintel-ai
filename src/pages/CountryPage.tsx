@@ -12,6 +12,7 @@ import { DistanceCalculator } from '../components/DistanceCalculator';
 import { InfrastructureInsights } from '../components/InfrastructureInsights';
 import { AILocalGuide } from '../components/AILocalGuide';
 import { AffiliateWidgets } from '../components/AffiliateWidgets';
+import { PDFReport } from '../components/PDFReport';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
@@ -348,6 +349,20 @@ export default function CountryPage() {
       </Helmet>
 
       {/* Error Toast */}
+      {/* Print Only Header */}
+      <div className="print-only mb-10 text-center border-b-2 border-black pb-6">
+        <h1 className="text-3xl font-black uppercase tracking-tighter">ZIPINTEL GLOBAL INFRASTRUCTURE AUDIT REPORT</h1>
+        <div className="flex justify-between items-center mt-6 text-xs font-bold">
+          <div className="text-left">
+            <p>LOCATION: {actualZipCode} | {actualRegion}</p>
+            <p>COUNTRY: {actualCountryId?.toUpperCase()}</p>
+          </div>
+          <div className="text-right">
+            <p>DATE: {new Date().toLocaleDateString()}</p>
+            <p>STATUS: VERIFIED NODE</p>
+          </div>
+        </div>
+      </div>
       <AnimatePresence>
         {errorStatus && (
           <motion.div
@@ -396,13 +411,16 @@ export default function CountryPage() {
         </div>
         
         {stateId && (
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-tighter"
-          >
-            <ArrowLeft className="w-3 h-3" />
-            <span>{language === 'en' ? 'Back' : 'వెనుకకు'}</span>
-          </button>
+          <div className="flex items-center justify-between no-print">
+            <button 
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-tighter"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              <span>{language === 'en' ? 'Back' : 'వెనుకకు'}</span>
+            </button>
+            <PDFReport countryCode={countryCode || actualCountryId?.substring(0, 2).toUpperCase()} region={actualRegion} zipCode={actualZipCode} />
+          </div>
         )}
       </div>
 
@@ -786,6 +804,9 @@ export default function CountryPage() {
           <h4 className="text-2xl font-light text-white mb-1 uppercase tracking-tighter italic">Real-Time</h4>
           <p className="text-[9px] text-slate-500 uppercase font-black tracking-[0.2em]">Daily Directory Updates</p>
         </div>
+      </div>
+      <div className="print-only fixed bottom-0 left-0 right-0 py-4 border-t border-slate-200 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white">
+        Generated securely via ZipIntel AI Nodes - www.zipintel-ai.com
       </div>
     </div>
   );
