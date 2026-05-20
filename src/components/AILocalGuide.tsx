@@ -46,7 +46,7 @@ export const AILocalGuide: React.FC<AILocalGuideProps> = ({ districtId, countryI
       'CH': 'CHF 2,500 - 5,800 + / month'
     };
     
-    const est = rentals[stats.countryCode] || 'Local variance based on regional tiering';
+    const est = stats.rentalEstimate || rentals[stats.countryCode] || 'Local variance based on regional tiering';
     let economic = `The Economic Index for ${name} is currently rated as ${isMajorHub ? 'Premium Plus' : 'Emerging Industrial'}. Estimated monthly rental for a standard residential/office unit in this ZIP node is approximately ${est}, factoring in current market liquidity and the verified ${stats.financeIdentifiers.label} access.`;
 
     return { logistics, connectivity, economic };

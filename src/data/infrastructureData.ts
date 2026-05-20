@@ -5,6 +5,7 @@ export interface PostalInfrastructure {
   logisticsHubs: { mainPartner: string; nearestHub: string; coverage: string };
   deliveryCheck: { status: 'Instant' | 'Available' | 'Limited'; eta: string; platforms: string };
   financeIdentifiers: { label: string; code: string };
+  rentalEstimate?: string;
 }
 
 export const GLOBAL_POSTAL_MAP: Record<string, PostalInfrastructure> = {
@@ -14,7 +15,8 @@ export const GLOBAL_POSTAL_MAP: Record<string, PostalInfrastructure> = {
     internetStatus: { provider: "Jio Fiber & Airtel 5G", avgSpeed: "1 Gbps", type: "Fiber & high-throughput 5G" },
     logisticsHubs: { mainPartner: "BlueDart & Delhivery", nearestHub: "Gajuwaka Warehouse Centroid", coverage: "High Speed Regional" },
     deliveryCheck: { status: "Instant", eta: "Under 2 Hours", platforms: "Zomato, Swiggy, Blinkit, BigBasket" },
-    financeIdentifiers: { label: "IFSC Code", code: "SBIN0000952" }
+    financeIdentifiers: { label: "IFSC Code", code: "SBIN0000952" },
+    rentalEstimate: "₹10,000 - ₹35,000 / month"
   },
   "hyderabad": {
     regionKey: "hyderabad",
