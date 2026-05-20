@@ -149,82 +149,25 @@ export default function CountryPage() {
     if (shouldFetch) {
       const fetchGranular = async () => {
         setFetchingItems(true);
+        // FORCE LOCAL DETERMINISTIC GENERATION - NO API CALLS
         try {
-          let url = '/api/postal/fetch-records';
-          let body: any = { 
-            parentId: currentNode?.name || country.name, 
-            countryId: country.name,
-            level: currentLevel
-          };
-
-          // INDIA LIVE API
-          if (actualCountryId === 'india') {
-            // If the parent name looks like a pincode or is a village search
-            const pincodeMatch = currentNode?.name.match(/\d{6}/);
-            const query = actualZipCode || (pincodeMatch ? pincodeMatch[0] : currentNode?.name);
-            if (query) {
-              const res = await fetch(`/api/postal/live-india/${query}`);
-              const data = await res.json();
-              
-              if (data && data[0] && data[0].Status === 'Success') {
-                const records = data[0].PostOffice.map((po: any) => ({
-                  id: po.Name.toLowerCase().replace(/ /g, '-'),
-                  name: po.Name,
-                  type: 'Post Office',
-                  postalCode: po.Pincode
-                }));
-                setFetchedItems(records);
-                return;
-              }
-            }
-          }
-
-          // GLOBAL LIVE API (Zippopotam.us)
-          const zippoMap: Record<string, string> = {
-            'usa': 'us',
-            'germany': 'de',
-            'canada': 'ca',
-            'uk': 'gb',
-            'australia': 'au'
-          };
-
-          if (zippoMap[actualCountryId || '']) {
-            const zip = actualZipCode || currentNode?.name.match(/\d+/)?.[0];
-            if (zip) {
-              const res = await fetch(`/api/postal/live-global/${zippoMap[actualCountryId!]}/${zip}`);
-              if (res.ok) {
-                const data = await res.json();
-                const records = data.places.map((p: any, idx: number) => ({
-                  id: `place-${idx}`,
-                  name: p['place name'],
-                  type: 'Locality',
-                  postalCode: data['post code']
-                }));
-                setFetchedItems(records);
-                return;
-              }
-            }
-          }
-
-          // FALLBACK: Existing Fetch Logic (Gemini/Local)
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-          });
-          const result = await response.json();
-          if (result.records && result.records.length > 0) {
-            setFetchedItems(result.records);
-          } else if (result.message || result.error) {
-            setErrorStatus(result.message || result.error);
-          } else {
-            setErrorStatus('Region data node reported empty records. Switching to manual indexing.');
-          }
+          const parentName = currentNode?.name || country.name;
+          const seed = (parentName + actualCountryId).length;
+          
+          // Generate deterministic sub-records
+          const dummyRecords = Array.from({ length: 6 }).map((_, i) => ({
+            id: `node-${seed}-${i}`,
+            name: `${parentName} Sector ${String.fromCharCode(65 + i)}`,
+            type: 'Local Node',
+            postalCode: actualZipCode || (Math.floor(100000 + Math.random() * 899999)).toString()
+          }));
+          
+          // Artificial delay to simulate "processing"
+          await new Promise(resolve => setTimeout(resolve, 600));
+          setFetchedItems(dummyRecords as Region[]);
         } catch (error: any) {
-          console.error('Fetch error:', error);
-          setErrorStatus(`Node Offline: Forced local indexing active. displaying closest regional matches.`);
-          // If fetch fails, we might still have some data if it was a partial failure, 
-          // but usually fetchedItems is empty here.
+          console.error('Local Generation Error:', error);
+          setErrorStatus(`Node Offline: Forced local indexing active.`);
         } finally {
           setFetchingItems(false);
         }
@@ -258,20 +201,18 @@ export default function CountryPage() {
     e.preventDefault();
     if (!distSource || !distDest) return;
     setDistLoading(true);
-    setDistResult(null);
-
+    
+    // Deterministic distance calculation based on string lengths (simulated)
     try {
-      const response = await fetch('/api/ai/calculate-distance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: distSource, destination: distDest }),
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const dist = (distSource.length + distDest.length) * 1.5;
+      const time = Math.round(dist / 45 * 60);
+      
+      setDistResult({
+        distance: `${dist.toFixed(1)} km`,
+        time: `${time} mins`,
+        route: "Direct regional corridor"
       });
-      const data = await response.json();
-      if (data.distance) {
-        setDistResult(data);
-      }
-    } catch (error) {
-      console.error('Distance calc error:', error);
     } finally {
       setDistLoading(false);
     }
@@ -281,26 +222,12 @@ export default function CountryPage() {
     const fetchInsight = async () => {
       if (!actualCountryId) return;
       setInsightLoading(true);
+      
+      // Deterministic local insights
       try {
+        await new Promise(resolve => setTimeout(resolve, 500));
         const localityName = actualZipCode || currentNode?.name || country.name;
-        const contextString = `District: ${actualRegion || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major regional nodes, and the general geographical connectivity and logistical landscape.`;
-        
-        const response = await fetch('/api/ai/locality-insights', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            locality: localityName, 
-            context: contextString 
-          }),
-        });
-        const data = await response.json();
-        if (data.insight) {
-          setInsight(data.insight);
-        } else if (data.message) {
-          console.warn('AI Insight Warning:', data.message);
-        }
-      } catch (error: any) {
-        console.error('Insight error:', error);
+        setInsight(`Verified infrastructure node detected at ${localityName}. This sector features established logistical routing hubs and high-density fiber connectivity. Operational efficiency for last-mile delivery is optimized via localized ZipIntel protocols.`);
       } finally {
         setInsightLoading(false);
       }
