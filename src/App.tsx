@@ -16,6 +16,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/ai-tools" element={<AITools />} />
+              <Route path="/zip/:countryCode/:region/:zipCode" element={<CountryPage />} />
               <Route path="/:countryId" element={<CountryPage />} />
               <Route path="/:countryId/:l1" element={<CountryPage />} />
               <Route path="/:countryId/:l1/:l2" element={<CountryPage />} />

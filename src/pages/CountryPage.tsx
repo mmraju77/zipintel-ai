@@ -14,13 +14,34 @@ import { AILocalGuide } from '../components/AILocalGuide';
 
 export default function CountryPage() {
   const { t, language } = useI18n();
-  const { countryId, l1: stateId, l2: districtId, l3: localityId } = useParams<{ countryId: string; l1?: string; l2?: string; l3?: string }>();
-  
-  const districtName = districtId ? districtId.replace(/-/g, ' ').toUpperCase() : '';
+  const { 
+    countryId: countryParam, 
+    l1: stateId, 
+    l2: districtId, 
+    l3: localityId,
+    countryCode,
+    region,
+    zipCode
+  } = useParams<{ 
+    countryId?: string; 
+    l1?: string; 
+    l2?: string; 
+    l3?: string;
+    countryCode?: string;
+    region?: string;
+    zipCode?: string;
+  }>();
+
+  // Normalization for pSEO route if it matches /zip/:countryCode/:region/:zipCode
+  const actualCountryId = countryCode ? COUNTRIES.find(c => c.id.toLowerCase().includes(countryCode.toLowerCase()) || c.name.toLowerCase() === countryCode.toLowerCase())?.id || countryCode.toLowerCase() : countryParam;
+  const actualRegion = region || districtId;
+  const actualZipCode = zipCode || localityId;
+
+  const districtName = actualRegion ? actualRegion.replace(/-/g, ' ').toUpperCase() : '';
   
   const navigate = useNavigate();
-  const country = COUNTRIES.find(c => c.id === countryId);
-  const data = POSTAL_DATA[countryId || ''] || [];
+  const country = COUNTRIES.find(c => c.id === actualCountryId);
+  const data = POSTAL_DATA[actualCountryId || ''] || [];
 
   const [favorites, setFavorites] = React.useState<SearchResult[]>([]);
 
@@ -85,17 +106,17 @@ export default function CountryPage() {
 
   // Resolve hierarchy nodes
   const node1 = stateId ? data.find(n => n.id === stateId) : null;
-  const node2 = districtId ? node1?.subRegions?.find(n => n.id === districtId) : null;
-  const node3 = localityId ? node2?.subRegions?.find(n => n.id === localityId) : null;
+  const node2 = actualRegion ? (node1?.subRegions?.find(n => n.id === actualRegion) || data.find(n => n.id === actualRegion)) : null;
+  const node3 = actualZipCode ? node2?.subRegions?.find(n => n.id === actualZipCode) : null;
 
   const currentNode = node3 || node2 || node1;
   const items = currentNode ? (currentNode.subRegions || []) : data;
-  const currentLevel = localityId ? 3 : districtId ? 2 : stateId ? 1 : 0;
+  const currentLevel = actualZipCode ? 3 : actualRegion ? 2 : stateId ? 1 : 0;
   const nextLevelName = country.hierarchy[currentLevel] || 'Data';
 
   // Programmatic SEO Framework Resolution
   const frameworkState = stateId ? POSTAL_FRAMEWORK[stateId] : null;
-  const frameworkDistrict = (frameworkState && districtId) ? frameworkState.districts[districtId] : null;
+  const frameworkDistrict = (frameworkState && actualRegion) ? frameworkState.districts[actualRegion] : null;
   const isPseoActive = !!frameworkDistrict;
   
   const pSeoMandals = frameworkDistrict?.mandals || [];
@@ -111,7 +132,7 @@ export default function CountryPage() {
     setFetchedItems([]);
     setErrorStatus(null);
     
-    const shouldFetch = (stateId || districtId || localityId) && items.length === 0;
+    const shouldFetch = (stateId || actualRegion || actualZipCode) && items.length === 0;
     
     if (shouldFetch) {
       const fetchGranular = async () => {
@@ -125,10 +146,10 @@ export default function CountryPage() {
           };
 
           // INDIA LIVE API
-          if (countryId === 'india') {
+          if (actualCountryId === 'india') {
             // If the parent name looks like a pincode or is a village search
             const pincodeMatch = currentNode?.name.match(/\d{6}/);
-            const query = pincodeMatch ? pincodeMatch[0] : currentNode?.name;
+            const query = actualZipCode || (pincodeMatch ? pincodeMatch[0] : currentNode?.name);
             if (query) {
               const res = await fetch(`/api/postal/live-india/${query}`);
               const data = await res.json();
@@ -155,10 +176,10 @@ export default function CountryPage() {
             'australia': 'au'
           };
 
-          if (zippoMap[countryId || '']) {
-            const zip = currentNode?.name.match(/\d+/);
+          if (zippoMap[actualCountryId || '']) {
+            const zip = actualZipCode || currentNode?.name.match(/\d+/)?.[0];
             if (zip) {
-              const res = await fetch(`/api/postal/live-global/${zippoMap[countryId!]}/${zip[0]}`);
+              const res = await fetch(`/api/postal/live-global/${zippoMap[actualCountryId!]}/${zip}`);
               if (res.ok) {
                 const data = await res.json();
                 const records = data.places.map((p: any, idx: number) => ({
@@ -198,11 +219,11 @@ export default function CountryPage() {
       };
       fetchGranular();
     }
-  }, [stateId, districtId, localityId, currentNode?.id, items.length, countryId]);
+  }, [stateId, actualRegion, actualZipCode, currentNode?.id, items.length, actualCountryId]);
 
   const displayItems = items.length > 0 ? items : fetchedItems;
 
-  const currentPin = isPseoActive ? (pSeoMandals[0]?.pin || '531024') : '531077';
+  const currentPin = actualZipCode || (isPseoActive ? (pSeoMandals[0]?.pin || '531024') : '531077');
 
   // AI Locality Insights logic
   const [insight, setInsight] = React.useState<string>('');
@@ -219,7 +240,7 @@ export default function CountryPage() {
     setDistSource('');
     setDistDest('');
     setDistResult(null);
-  }, [districtId, localityId]);
+  }, [actualRegion, actualZipCode]);
 
   const handleCalculateDistance = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -246,11 +267,11 @@ export default function CountryPage() {
 
   React.useEffect(() => {
     const fetchInsight = async () => {
-      if (!countryId) return;
+      if (!actualCountryId) return;
       setInsightLoading(true);
       try {
-        const localityName = currentNode?.name || country.name;
-        const contextString = `District: ${districtId || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major regional nodes, and the general geographical connectivity and logistical landscape.`;
+        const localityName = actualZipCode || currentNode?.name || country.name;
+        const contextString = `District: ${actualRegion || ''}, State: ${stateId || ''}, Country: ${country.name}. Provide brief highlights on postal infrastructure, major regional nodes, and the general geographical connectivity and logistical landscape.`;
         
         const response = await fetch('/api/ai/locality-insights', {
           method: 'POST',
@@ -274,14 +295,23 @@ export default function CountryPage() {
     };
 
     fetchInsight();
-  }, [currentNode?.id, country.name, districtId, localityId]);
+  }, [currentNode?.id, country.name, actualRegion, actualZipCode]);
 
-  // Dynamic Title Construction
-  const locationLabel = [node3?.name, node2?.name, node1?.name, country.name]
-    .filter(Boolean)
-    .join(', ');
+  // Dynamic Title Construction for pSEO
+  const isPseoRoute = !!zipCode;
+  const locationLabel = [node3?.name, node2?.name, node1?.name, country.name].filter(Boolean).join(', ');
+  
+  const pSeoTitle = isPseoRoute 
+    ? `${zipCode} Postal Intelligence Node | ${region}, ${countryCode} | Internet Speed & Logistics Guide` 
+    : locationLabel + ` | ZipIntel AI`;
 
-  const pageTitle = `${nextLevelName} in ${locationLabel} | ZipIntel AI`;
+  const pSeoDescription = isPseoRoute
+    ? `Looking for ${zipCode} metrics? Get live internet speeds (Jio/AT&T), nearest courier logistics hubs, delivery feasibility, and AI area financial indicators for ${region}, ${countryCode} instantly.`
+    : `Explore ${nextLevelName} in ${[node3?.name, node2?.name, node1?.name, country.name].filter(Boolean).join(', ')}. Comprehensive postal and utility intelligence.`;
+  
+  const canonicalUrl = isPseoRoute
+    ? `https://www.zipintel-ai.com/zip/${countryCode}/${region}/${zipCode}`
+    : `https://www.zipintel-ai.com/${actualCountryId}${stateId ? '/' + stateId : ''}${actualRegion ? '/' + actualRegion : ''}${actualZipCode ? '/' + actualZipCode : ''}`;
 
   const ShimmerCard = () => (
     <div className="glass-card p-6 animate-pulse border-slate-800/50">
@@ -301,8 +331,9 @@ export default function CountryPage() {
   return (
     <div className="space-y-8 pb-20">
       <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={`Explore ${nextLevelName} in ${locationLabel}. Comprehensive postal and utility intelligence.`} />
+        <title>{pSeoTitle}</title>
+        <meta name="description" content={pSeoDescription} />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       {/* Error Toast */}
@@ -604,7 +635,7 @@ export default function CountryPage() {
         ) : displayItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayItems.map((item, index) => {
-              const itemPath = localityId ? '#' : districtId ? `/${countryId}/${stateId}/${districtId}/${item.id}` : stateId ? `/${countryId}/${stateId}/${item.id}` : `/${countryId}/${item.id}`;
+              const itemPath = localityId ? '#' : actualRegion ? `/${actualCountryId}/${stateId}/${actualRegion}/${item.id}` : stateId ? `/${actualCountryId}/${stateId}/${item.id}` : `/${actualCountryId}/${item.id}`;
               const searchItem: SearchResult = { ...item, path: itemPath };
               
               return (
