@@ -3,10 +3,19 @@ import fetch from "node-fetch";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
+import { generateSitemap } from "../src/utils/sitemapGenerator";
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+// Sitemap Route
+app.get("/sitemap.xml", (req, res) => {
+  const baseUrl = "https://www.zipintel-ai.com";
+  res.header("Content-Type", "application/xml");
+  res.send(generateSitemap(baseUrl));
+});
 
 // Initialize Gemini with safety checks
 const getAIClient = () => {
