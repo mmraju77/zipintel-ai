@@ -7,6 +7,7 @@ import { COUNTRIES, SearchResult } from '../types';
 import { POSTAL_DATA } from '../data/postalData';
 import { useI18n } from '../lib/i18n';
 import { GlobalSearch } from '../components/GlobalSearch';
+import { UtilityHub } from '../components/UtilityHub';
 
 const MotionLink = motion.create(Link);
 
@@ -370,6 +371,9 @@ export default function Home() {
             <div className="absolute top-2 right-2 text-[8px] bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-slate-600 uppercase font-bold">Beta</div>
           </div>
       </section>
+
+      {/* Utility Hub Section */}
+      <UtilityHub />
     </div>
   );
 }
