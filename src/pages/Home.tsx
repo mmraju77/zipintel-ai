@@ -302,6 +302,11 @@ export default function Home() {
             </MotionLink>
           ))}
         </div>
+
+        {/* Injected Phase 2 Core Engine */}
+        <div className="pt-8 border-t border-slate-800/30">
+          <UtilityHub />
+        </div>
       </section>
 
       {/* Intelligence Bento */}
@@ -371,9 +376,6 @@ export default function Home() {
             <div className="absolute top-2 right-2 text-[8px] bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-slate-600 uppercase font-bold">Beta</div>
           </div>
       </section>
-
-      {/* Utility Hub Section */}
-      <UtilityHub />
     </div>
   );
 }
