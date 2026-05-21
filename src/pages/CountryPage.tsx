@@ -117,7 +117,7 @@ export default function CountryPage() {
 
       </div>
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto mt-6">
         <MonetizationNodes zone="bottom" />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MonetizationNodes } from '../components/MonetizationNodes';
 
 export default function Dashboard() {
   // Mock Data for User History & Saved Items
@@ -100,6 +101,10 @@ export default function Dashboard() {
           </div>
         </div>
 
+      </div>
+
+      <div className="max-w-6xl mx-auto mt-8">
+        <MonetizationNodes zone="bottom" />
       </div>
     </div>
   );
