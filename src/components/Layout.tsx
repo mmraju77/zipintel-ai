@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES } from '../types';
 import { useI18n } from '../lib/i18n';
 import { BrandLogo } from './BrandLogo';
+import { TrustFooter } from './TrustFooter';
 
 const Logo = ({ collapsed = false }: { collapsed?: boolean }) => (
   <Link to="/" className="flex items-center gap-3 no-underline">
@@ -231,6 +232,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {children}
             </div>
           </div>
+
+          <TrustFooter />
         </main>
       </div>
     </div>
