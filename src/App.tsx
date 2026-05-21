@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import CountryPage from './pages/CountryPage';
 import AITools from './pages/AIToolsPage';
+import Dashboard from './pages/Dashboard';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/ai-tools" element={<AITools />} />
               <Route path="/zip/:countryCode/:region/:zipCode" element={<CountryPage />} />
               <Route path="/:countryId" element={<CountryPage />} />

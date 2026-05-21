@@ -10,7 +10,8 @@ import {
   Globe, 
   ChevronRight,
   Database,
-  Languages
+  Languages,
+  LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES } from '../types';
@@ -48,6 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { name: t('home'), icon: Home, path: '/' },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: t('aiTools'), icon: Cpu, path: '/ai-tools' },
   ];
 
