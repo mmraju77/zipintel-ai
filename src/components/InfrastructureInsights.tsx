@@ -4,6 +4,7 @@ import { Wifi, Truck, ShoppingBag, Landmark, Shield, CreditCard } from 'lucide-r
 import { useParams } from 'react-router-dom';
 import { useI18n } from '../lib/i18n';
 import { getInfrastructureData } from '../data/infrastructureData';
+import { SEOAutomation } from './SEOAutomation';
 
 interface InfrastructureInsightsProps {
   districtId: string;
@@ -280,6 +281,13 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
           </div>
         </div>
       </motion.div>
+      <SEOAutomation 
+        country={code} 
+        zip={zip} 
+        bankName={matrix.bankName} 
+        routingLabel={matrix.label} 
+        routingValue={matrix.value} 
+      />
     </motion.div>
   );
 };
