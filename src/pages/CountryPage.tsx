@@ -118,11 +118,12 @@ export default function CountryPage() {
 
       </div>
 
-      {/* Community Engagement Layer */}
-      <CommunityLayer />
-
       <div className="max-w-5xl mx-auto mt-6">
         <MonetizationNodes zone="bottom" />
+      </div>
+
+      <div className="max-w-5xl mx-auto mt-2">
+        <CommunityLayer />
       </div>
     </div>
   );
