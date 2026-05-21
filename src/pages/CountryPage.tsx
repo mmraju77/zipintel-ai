@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { InfrastructureInsights } from '../components/InfrastructureInsights';
+import { MonetizationNodes } from '../components/MonetizationNodes';
 import { useI18n } from '../lib/i18n';
 
 export default function CountryPage() {
@@ -109,8 +110,15 @@ export default function CountryPage() {
             countryCode={currentCountry} 
             zipCode={currentZip} 
           />
+          <div className="mt-6">
+            <MonetizationNodes zone="sidebar" />
+          </div>
         </div>
 
+      </div>
+
+      <div className="max-w-5xl mx-auto">
+        <MonetizationNodes zone="bottom" />
       </div>
     </div>
   );
