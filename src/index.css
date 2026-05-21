@@ -7,8 +7,21 @@
   --color-gold: #deff9a;
   --color-brass: #c9f57d;
   --color-accent: var(--color-gold);
+
+  /* Brand Core Identity Lock */
+  --color-zip-dark-canvas: #0B0F19;
+  --color-zip-dark-surface: #1E293B;
+  --color-zip-dark-border: #334155;
+  --color-zip-electric: #2563EB;
+  --color-zip-electric-glow: rgba(37, 99, 235, 0.15);
+  --color-zip-quantum: #10B981;
+  --color-zip-quantum-glow: rgba(16, 185, 129, 0.15);
   
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --shadow-zip-glow: 0 0 20px 0 rgba(37, 99, 235, 0.1);
+  --shadow-quantum-glow: 0 0 20px 0 rgba(16, 185, 129, 0.1);
 
   --animate-shimmer: shimmer 3s linear infinite;
 
