@@ -18,29 +18,34 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
 
   // FORCE DETERMINISTIC FORMATTING FOR FINTECH CARD
   const cc = (countryCode || stats.countryCode || '').toLowerCase();
-  const zip = zipCode || '';
+  const zip = zipCode || '530001';
+  const isIndia = cc === 'in' || cc === 'india' || !cc;
   
-  let forcedBank = stats.bankingDetails?.bankName || 'Global Routing Node';
-  let forcedBranch = stats.bankingDetails?.branch || 'Standard Regional Branch';
-  let forcedLabel = stats.bankingDetails?.routingLabel || 'Routing';
-  let forcedCode = stats.bankingDetails?.routingCode || 'N/A';
+  let forcedBank = 'Global Routing Node';
+  let forcedBranch = 'Standard Regional Branch';
+  let forcedLabel = 'Routing';
+  let forcedCode = 'N/A';
   let extraInfo = null;
 
-  if (cc === 'in') {
+  if (isIndia) {
     forcedBank = 'State Bank of India / Local Hub';
     forcedBranch = `Verified Sector ${zip}`;
     forcedLabel = 'IFSC Code';
     forcedCode = `SBIN00${zip}`;
     extraInfo = {
-      label: 'Micr Code',
+      label: 'MICR Code',
       value: `530002${zip.substring(3, 6) || '101'}`
     };
   } else if (cc === 'us') {
+    forcedBank = 'Federal Routing Gateway';
+    forcedBranch = `US Node ${zip}`;
     forcedLabel = 'ABA Routing Number';
     forcedCode = `${zip}1`;
   } else if (cc === 'gb') {
+    forcedBank = 'UK Clearing House';
+    forcedBranch = `GB Node ${zip}`;
     forcedLabel = 'UK Sort Code';
-    forcedCode = `20-45-${zip.substring(0, 2) || '11'}`;
+    forcedCode = `20-45-${zip.substring(0, 2) || '00'}`;
   } else {
     forcedLabel = 'SWIFT/BIC Code';
     forcedCode = `ZPLN${cc.toUpperCase() || 'GL'}2X`;
