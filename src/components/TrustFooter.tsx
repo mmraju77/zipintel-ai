@@ -53,7 +53,15 @@ export const TrustFooter: React.FC = () => {
       <div className="max-w-6xl mx-auto pt-6 border-t border-slate-900 flex flex-wrap justify-between items-center gap-4 text-[11px] font-mono text-slate-600">
         <p>© {currentYear} ZipIntel AI Digital Infrastructure. All rights reserved.</p>
         <p className="text-slate-500">
-          Founder Status: <span className="text-slate-400">Verified Professional Node Connected via LinkedIn</span>
+          Founder Status:{" "}
+          <a 
+            href="https://www.linkedin.com/in/munchingi-matya-raju-52baa71bb/"
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-blue-400 hover:text-blue-300 underline transition-colors font-semibold"
+          >
+            Verified Professional Node via LinkedIn →
+          </a>
         </p>
       </div>
     </footer>
