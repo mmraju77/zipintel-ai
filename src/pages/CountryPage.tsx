@@ -681,14 +681,14 @@ export default function CountryPage() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4"
         >
           <GeoRadar 
-            key={`${districtId}-${localityId}`}
+            key={`radar-${districtId}-${localityId}`}
             district={districtName || districtId || ''} 
             coords={pSeoCoords} 
             language={language} 
           />
 
           <DistanceCalculator
-            key={`${districtId}-${localityId}`}
+            key={`distance-${districtId}-${localityId}`}
             district={districtId || ''}
             language={language}
             distSource={distSource}
@@ -704,7 +704,13 @@ export default function CountryPage() {
 
       {isPseoActive && !localityId && (
         <>
-          <InfrastructureInsights key={`infra-${districtId}`} districtId={districtId || ''} language={language} />
+          <InfrastructureInsights 
+            key={`infra-${districtId}`} 
+            districtId={districtId || ''} 
+            language={language} 
+            countryCode={countryCode || (actualCountryId === 'india' ? 'IN' : actualCountryId === 'usa' ? 'US' : actualCountryId === 'uk' ? 'GB' : actualCountryId?.substring(0, 2).toUpperCase() || 'INTL')}
+            zipCode={actualZipCode || (isPseoActive ? currentPin : '')}
+          />
           <AILocalGuide key={`ai-guide-${districtId}`} districtId={districtId || ''} countryId={country.id} />
           <AffiliateWidgets 
             countryCode={countryCode || (actualCountryId === 'india' ? 'IN' : actualCountryId === 'usa' ? 'US' : actualCountryId === 'uk' ? 'GB' : actualCountryId?.substring(0, 2).toUpperCase() || 'INTL')} 

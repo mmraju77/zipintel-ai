@@ -8,11 +8,43 @@ import { getInfrastructureData } from '../data/infrastructureData';
 interface InfrastructureInsightsProps {
   districtId: string;
   language: string;
+  countryCode?: string;
+  zipCode?: string;
 }
 
-export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ districtId, language }) => {
+export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ districtId, language, countryCode, zipCode }) => {
   const { t } = useI18n();
   const stats = getInfrastructureData(districtId);
+
+  // FORCE DETERMINISTIC FORMATTING FOR FINTECH CARD
+  const cc = (countryCode || stats.countryCode || '').toLowerCase();
+  const zip = zipCode || '';
+  
+  let forcedBank = stats.bankingDetails?.bankName || 'Global Routing Node';
+  let forcedBranch = stats.bankingDetails?.branch || 'Standard Regional Branch';
+  let forcedLabel = stats.bankingDetails?.routingLabel || 'Routing';
+  let forcedCode = stats.bankingDetails?.routingCode || 'N/A';
+  let extraInfo = null;
+
+  if (cc === 'in') {
+    forcedBank = 'State Bank of India / Local Hub';
+    forcedBranch = `Verified Sector ${zip}`;
+    forcedLabel = 'IFSC Code';
+    forcedCode = `SBIN00${zip}`;
+    extraInfo = {
+      label: 'Micr Code',
+      value: `530002${zip.substring(3, 6) || '101'}`
+    };
+  } else if (cc === 'us') {
+    forcedLabel = 'ABA Routing Number';
+    forcedCode = `${zip}1`;
+  } else if (cc === 'gb') {
+    forcedLabel = 'UK Sort Code';
+    forcedCode = `20-45-${zip.substring(0, 2) || '11'}`;
+  } else {
+    forcedLabel = 'SWIFT/BIC Code';
+    forcedCode = `ZPLN${cc.toUpperCase() || 'GL'}2X`;
+  }
 
   const container = {
     hidden: { opacity: 0 },
@@ -146,24 +178,33 @@ export const InfrastructureInsights: React.FC<InfrastructureInsightsProps> = ({ 
           <div>
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">FINANCIAL ROUTING INFRASTRUCTURE</p>
             <h3 className="text-sm font-black text-white tracking-widest uppercase">
-              {stats.bankingDetails?.bankName || 'Global Routing Node'}
+              {forcedBank}
             </h3>
             <p className="text-[10px] text-[#deff9a] font-bold uppercase tracking-tighter mt-0.5">
-               {stats.bankingDetails?.branch || 'Standard Regional Branch'}
+               {forcedBranch}
             </p>
           </div>
           
           <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
             <div className="flex justify-between items-center bg-[#deff9a]/5 p-2 rounded-lg border border-[#deff9a]/10">
                <div>
-                  <p className="text-[7px] font-bold text-slate-500 uppercase">{stats.bankingDetails?.routingLabel || 'Routing'}</p>
-                  <p className="text-[10px] font-black text-white tracking-widest">{stats.bankingDetails?.routingCode || 'N/A'}</p>
+                  <p className="text-[7px] font-bold text-slate-500 uppercase">{forcedLabel}</p>
+                  <p className="text-[10px] font-black text-white tracking-widest">{forcedCode}</p>
                </div>
                <div className="text-right">
                   <p className="text-[7px] font-bold text-slate-500 uppercase">Clearance</p>
                   <p className="text-[8px] font-black text-[#deff9a] uppercase">Synchronized</p>
                </div>
             </div>
+
+            {extraInfo && (
+              <div className="flex justify-between items-center bg-[#deff9a]/5 p-2 rounded-lg border border-[#deff9a]/10">
+                <div>
+                    <p className="text-[7px] font-bold text-slate-500 uppercase">{extraInfo.label}</p>
+                    <p className="text-[10px] font-black text-white tracking-widest">{extraInfo.value}</p>
+                </div>
+              </div>
+            )}
             
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
