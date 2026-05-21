@@ -15,43 +15,26 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { COUNTRIES } from '../types';
 import { useI18n } from '../lib/i18n';
+import { BrandLogo } from './BrandLogo';
 
 const Logo = ({ collapsed = false }: { collapsed?: boolean }) => (
-  <div className="flex items-center gap-3">
-    <div className="relative w-10 h-10 flex-shrink-0">
-      {/* Orbit Rings */}
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0 border border-gold/30 rounded-full"
-      />
-      <motion.div 
-        animate={{ rotate: -360 }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[3px] border border-blue-500/20 rounded-full"
-      />
-      {/* Core */}
-      <div className="absolute inset-[6px] bg-gradient-to-br from-slate-900 to-midnight rounded-full border border-gold/40 flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.15)]">
-        <Globe className="text-gold w-4 h-4" />
-      </div>
-      {/* Orbit Dot */}
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0"
-      >
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_#60a5fa] blur-[0.5px]" />
-      </motion.div>
-    </div>
-    {!collapsed && (
-      <div>
-        <h1 className="text-xl font-black tracking-tighter text-white uppercase italic leading-none">
-          ZIPINTEL <span className="gold-gradient-text">AI</span>
-        </h1>
-        <p className="text-[9px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">Global Intelligence</p>
+  <Link to="/" className="flex items-center gap-3 no-underline">
+    {!collapsed ? (
+      <BrandLogo className="h-10" />
+    ) : (
+      <div className="relative w-10 h-10 flex-shrink-0">
+        {/* Orbit Rings */}
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 border border-gold/30 rounded-full"
+        />
+        <div className="absolute inset-[6px] bg-slate-900 rounded-full border border-gold/40 flex items-center justify-center">
+          <Globe className="text-gold w-4 h-4" />
+        </div>
       </div>
     )}
-  </div>
+  </Link>
 );
 
 export default function Layout({ children }: { children: React.ReactNode }) {
